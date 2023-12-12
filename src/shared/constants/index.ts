@@ -13,5 +13,8 @@ export const SCREENS = {
     BROWSE_SCREEN: "BrowseScreen",
     ACCOUNT_SCREEN: "AccountScreen",
     SALE_REPORT: "SaleReport",
+
+    LOGIN_SCREEN: 'LoginScreen',
+    REGISTER_SCREEN: 'RegisterScreen'
   };
   

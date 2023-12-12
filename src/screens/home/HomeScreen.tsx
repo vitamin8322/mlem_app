@@ -3,7 +3,7 @@ import { Text } from 'react-native'
 
 const HomeScreen = () => {
   return (
-    <Text>
+    <Text className='text-red-500'>
       asdsaaaaaaas
     </Text>
   )
