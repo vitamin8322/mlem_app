@@ -80,7 +80,7 @@ const LoginScreen = () => {
         </View>
         <Text className="text-center mt-2">
           Bạn có tài khoản chưa?
-          <TouchableWithoutFeedback onPress={() => {navigate(SCREENS.REGISTER_SCREEN);}}>
+          <TouchableWithoutFeedback onPress={() => {navigate(SCREENS.HOME);}}>
             <Text className="text-orange"> Đăng ký </Text>
           </TouchableWithoutFeedback>
         </Text>

@@ -16,6 +16,9 @@ module.exports = {
         faqHeader: '#E9E9E9',
         orange: '#FE7A3E'
       },
+      flex: {
+        'row-between-center': 'display: flex; flex-direction: row; justify-content: space-between; align-items: center;',
+      },
     },
   },
   plugins: [],

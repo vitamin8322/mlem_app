@@ -1,0 +1,7 @@
+{
+  "helloUser": "Chào, tôi là {{name}}",
+  "home": "Tổng quan",
+  "transaction": "Lịch sử",
+  "report": "Báo cáo",
+  "account": "Tài khoản"
+}

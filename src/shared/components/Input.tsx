@@ -5,7 +5,7 @@ import {
   TextInputProps,
   TouchableWithoutFeedback,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Icon, { IconType } from "react-native-dynamic-vector-icons";
 
 export interface InputProps extends TextInputProps {
@@ -17,7 +17,7 @@ export interface InputProps extends TextInputProps {
   isPasswordField?: boolean;
   multiline?:boolean;
   numberOfLines?:number;
-  ref?:React.LegacyRef<TextInput>
+  isRef?:boolean
 }
 
 const Input = ({
@@ -29,12 +29,16 @@ const Input = ({
   isPasswordField,
   multiline,
   numberOfLines,
+  isRef,
   ...rest
 }: InputProps) => {
   const [isShowingPassword, setIsShowingPassword] = useState<boolean>(false);
 
   const handleShowingPassword = () => {
     setIsShowingPassword(!isShowingPassword);
+  };
+  const formatNumber = (value: any) => {
+    return new Intl.NumberFormat().format(100000);
   };
   
   return (
@@ -43,7 +47,7 @@ const Input = ({
         {...rest}
         multiline={multiline}
         numberOfLines={numberOfLines}
-        className={`${classNameInput} text-[16px] ${errorMessage ?'' :'mb-4' }`}
+        className={`text-[16px] ${classNameInput}  ${errorMessage ?'' :'mb-4' }`}
         placeholderTextColor={placeholderColor ? placeholderColor : "#eee"}
         secureTextEntry={isPasswordField && !isShowingPassword}
       />

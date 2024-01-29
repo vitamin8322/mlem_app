@@ -1,20 +1,19 @@
 import React from 'react'
 import { createStackNavigator } from "@react-navigation/stack";
 import { SCREENS } from '@shared-constants';
-import HomeScreen from '@screens/home/HomeScreen';
-import LoginScreen from '@screens/login/LoginScreen';
+import TransactionHistoryScreen from '@screens/transaction-history';
 const Stack = createStackNavigator();
 
-const CashbackNavigation = () => {
+const TransactionHistoryNavigation = () => {
   return (
     <Stack.Navigator
       screenOptions={{ headerShown: false }}
       initialRouteName={SCREENS.HOME_SCREEN}
     >
-      <Stack.Screen name={SCREENS.HOME_SCREEN} component={LoginScreen} />
+      <Stack.Screen name={SCREENS.HOME_SCREEN} component={TransactionHistoryScreen} />
         
     </Stack.Navigator>
   )
 }
 
-export default CashbackNavigation
+export default TransactionHistoryNavigation

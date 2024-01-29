@@ -29,7 +29,7 @@ const Navigation = () => {
     //   theme={LightTheme}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {true && (
+        {false && (
           <>
             <Stack.Group screenOptions={{ headerShown: false }}>
               <Stack.Screen name={SCREENS.LOGIN_SCREEN} component={LoginScreen} />

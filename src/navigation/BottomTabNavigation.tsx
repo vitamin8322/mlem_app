@@ -1,13 +1,18 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SCREENS } from "@shared-constants";
-import { Home, SaleReport } from "assets";
+import { TransactionHistory, TransactionHistoryActive, Home, HomeActive, SaleReport, Report, ReportActive, Account, AccountActive, Add } from "assets";
 import HomeNavigation from "./HomeNavigation";
-import CashbackNavigation from "./CashbackNavigation";
+import TransactionHistoryNavigation from "./TransactionHistoryNavigation";
+import { useTranslation } from "react-i18next";
+import ReportNavigation from "./ReportNavigation";
+import AccountNavigation from "./AccountNavigation";
+import TransactionNavigation from "./TransactionNavigation";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigation = () => {
-    const renderTabIcon = (
+  const { t, i18n } = useTranslation("home");
+  const renderTabIcon = (
         route: any,
         focused: boolean,
         color: string,
@@ -15,18 +20,37 @@ const BottomTabNavigation = () => {
       ) => {
         let iconName = <Home height={24} width={24} />;
         switch (route.name) {
-          case SCREENS.HOME:
+          case t(SCREENS.HOME):
             iconName = !focused ? (
               <Home height={24} width={24} />
             ) : (
-              <Home height={24} width={24} />
+              <HomeActive height={24} width={24} />
             );
             break;
-          case SCREENS.SALE_REPORT:
+          case `${t(SCREENS.TRANSACTION_HISTORY)}`:
             iconName = !focused ? (
-              <SaleReport height={24} width={24} />
+              <TransactionHistory height={24} width={24} />
             ) : (
-              <SaleReport height={24} width={24} />
+              <TransactionHistoryActive height={24} width={24} />
+            );
+            break;
+          case `${t(SCREENS.ADD_TRANSACTION)}`:
+            iconName = (
+              <Add height={34} width={34} />
+            ) 
+            break;
+          case t(SCREENS.REPORT):
+            iconName = !focused ? (
+              <Report height={24} width={24} />
+            ) : (
+              <ReportActive height={24} width={24} />
+            );
+            break;
+          case t(SCREENS.ACCOUNT):
+            iconName = !focused ? (
+              <Account height={24} width={24} />
+            ) : (
+              <AccountActive height={24} width={24} />
             );
             break;
         }
@@ -40,7 +64,7 @@ const BottomTabNavigation = () => {
               headerShown: false,
               tabBarIcon: ({ focused, color, size }) =>
                 renderTabIcon(route, focused, color, size),
-              tabBarActiveTintColor: '#FE7A3E',
+              tabBarActiveTintColor: '#000',
               tabBarInactiveTintColor: "gray",
               tabBarStyle: {
                 backgroundColor: '#FFF',
@@ -49,28 +73,63 @@ const BottomTabNavigation = () => {
             })}
           >
             <Tab.Screen
-              name={SCREENS.HOME}
+              name={`${t(SCREENS.HOME)}`}
               listeners={({ navigation }) => ({
                 tabPress: (e) => {
-                  navigation.navigate(SCREENS.HOME);
+                  navigation.navigate(t(SCREENS.HOME));
                 },
               })}
               component={HomeNavigation}
+              // options={{ tabBarLabel: '' }}
             />
             <Tab.Screen
-              name={SCREENS.SALE_REPORT}
+              name={`${t(SCREENS.TRANSACTION_HISTORY)}`}
               listeners={({ navigation }) => ({
                 tabPress: (e) => {
-                  navigation.navigate(SCREENS.SALE_REPORT);
+                  navigation.navigate(t(SCREENS.TRANSACTION_HISTORY));
                 },
               })}
-              component={CashbackNavigation}
+              component={TransactionHistoryNavigation}
+            />
+            <Tab.Screen
+              name={`${t(SCREENS.ADD_TRANSACTION)}`}
+              listeners={({ navigation }) => ({
+                tabPress: (e) => {
+                  navigation.navigate(t(SCREENS.ADD_TRANSACTION));
+                },
+              })}
+              component={TransactionNavigation}
+              options={{ tabBarLabel: '' }}
+            />
+
+            <Tab.Screen
+              name={`${t(SCREENS.REPORT)}`}
+              listeners={({ navigation }) => ({
+                tabPress: (e) => {
+                  navigation.navigate(t(SCREENS.REPORT));
+                },
+              })}
+              component={ReportNavigation}
+            />
+            <Tab.Screen
+              name={`${t(SCREENS.ACCOUNT)}`}
+              listeners={({ navigation }) => ({
+                tabPress: (e) => {
+                  if (false) {
+                    e.preventDefault();
+                    navigation.navigate(SCREENS.LOGIN_SCREEN);
+                  } else {
+                    navigation.navigate(SCREENS.ACCOUNT);
+                  }
+                },
+              })}
+              component={AccountNavigation}
             />
           </Tab.Navigator>
         </>
       );
 
-
+      // #908898
 }
 
 export default BottomTabNavigation;
