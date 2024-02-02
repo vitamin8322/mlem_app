@@ -1,14 +1,14 @@
 import 'react-native-gesture-handler';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {LogBox, SafeAreaView, Text, View} from 'react-native';
-import HomeScreen from '@screens/home/HomeScreen';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import SplashScreen from 'react-native-splash-screen';
 import {NativeBaseProvider} from 'native-base';
-import "./src/translations/i18n";
-import {Icon} from 'assets';
+import i18n from './src/translations/i18n';
+import {I18nextProvider} from 'react-i18next';
 import Navigation from 'navigation';
-import LoginScreen from '@screens/login/LoginScreen';
+import {MenuProvider} from 'react-native-popup-menu';
+import {asyncStorageService} from 'utils/storage';
 const queryClient = new QueryClient();
 
 function App(): JSX.Element {
@@ -18,17 +18,27 @@ function App(): JSX.Element {
     }, 750);
   }, []);
   useEffect(() => {
-    LogBox.ignoreLogs(['In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.']);
+    LogBox.ignoreLogs([
+      'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
+    ]);
+    const initializeLanguage = async () => {
+      const lang = await asyncStorageService.getValue('lang');
+      i18n.changeLanguage(lang || 'vi');
+    };
+
+    initializeLanguage();
   }, []);
   return (
     <>
       <QueryClientProvider client={queryClient}>
         <NativeBaseProvider>
-          <Navigation />
+          <MenuProvider>
+            <I18nextProvider i18n={i18n}>
+              <Navigation />
+            </I18nextProvider>
+          </MenuProvider>
         </NativeBaseProvider>
       </QueryClientProvider>
-      {/* <HomeScreen />
-      <LoginScreen /> */}
     </>
   );
 }

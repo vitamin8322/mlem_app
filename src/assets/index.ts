@@ -26,6 +26,10 @@ import Wallet from './images/category/Wallet.svg'
 import Pig from './images/category/Pig.svg'
 import Gift from './images/category/Gift.svg'
 import Invest from './images/category/Invest.svg'
+import ArrowLeft from './images/category/ArrowLeft.svg'
+import WouldInternet from './images/category/WouldInternet.svg'
+import Option from './images/category/Option.svg'
+import Language from './images/category/Language.svg'
 
 export {
     Icon, StartApp, Background,
@@ -34,4 +38,6 @@ export {
     Eye, EyeClose,
     Dinner, Car, Cloth, Cosmetics, Education, House, Medical, Smartphone,
     Wallet, Pig, Gift, Invest,
+    ArrowLeft, WouldInternet, Option, Language
+
 }

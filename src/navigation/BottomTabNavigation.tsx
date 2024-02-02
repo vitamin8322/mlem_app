@@ -119,7 +119,7 @@ const BottomTabNavigation = () => {
                     e.preventDefault();
                     navigation.navigate(SCREENS.LOGIN_SCREEN);
                   } else {
-                    navigation.navigate(SCREENS.ACCOUNT);
+                    navigation.navigate(`${t(SCREENS.ACCOUNT)}`);
                   }
                 },
               })}
