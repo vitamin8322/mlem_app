@@ -57,18 +57,15 @@ export enum ColorThemes {
   green = 'green',
 }
 
-type Theme = {
-  [key in ColorThemes]: {
-    primaryColor: string
-    darkerPrimaryColor: string
-    secondaryColor: string
-    lightColor: string
-    // textColor: string
+export type Theme = {
+  primaryColor: string;
+  darkerPrimaryColor: string;
+  secondaryColor: string;
+  lightColor: string;
+};
 
-  }
-}
-
-const THEMES: Theme = {
+// Define your themes
+export const THEMES: { [key: string]: Theme } = {
   base: {
     primaryColor: '#FCDE89',
     darkerPrimaryColor: '#C9AB56',
@@ -93,7 +90,7 @@ const THEMES: Theme = {
     secondaryColor: '#222222',
     lightColor: 'white',
   },
-}
+};
 
 export default {
   SETTINGS: {

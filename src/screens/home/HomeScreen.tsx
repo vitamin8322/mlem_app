@@ -1,49 +1,105 @@
 import {AccountActive, Dinner, Eye, EyeClose} from 'assets';
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useTranslation} from 'react-i18next';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import {BarChart} from 'react-native-chart-kit';
+import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import classNames from 'classnames';
 import {navigate} from 'react-navigation-helpers';
-import {SCREENS} from '@shared-constants';
+import {
+  REACT_QUERY_KEY,
+  SCREENS,
+  formatNumberWithCommas,
+} from '@shared-constants';
 import CardTransaction from '@shared-components/CardTransaction';
+import {AppContext, useTheme} from 'contexts/app.context';
+import {useQuery} from '@tanstack/react-query';
+import {getUserInfo} from '@services/apis/auth.api';
+import {
+  percentTransaction,
+  transactionExpMonth,
+  transactionExpWeek,
+  transactionType,
+} from '@services/apis/transaction.api';
+import BarchartHome from '@shared-components/BarchartHome';
 
 const HomeScreen = () => {
-  // const {t, i18n} = useTranslation('home');
+  const {t, i18n} = useTranslation('home');
+  const {theme} = useTheme();
+  const {setIsAuthenticated, setProfile, profile} = useContext(AppContext);
+
   const [isEyeClose, setIsEyeClose] = useState(false);
   const [selectViewReport, setSelectViewReport] = useState(0);
+  const [dataMostExp, setDataMostExp] = useState();
+  const [dataBarChart, setDataBarChart] = useState()
 
-  const data = {
-    labels: ['Tháng trước', 'Tháng này'],
-    datasets: [
-      {
-        data: [40, 45],
-      },
-    ],
-  };
+  const {data: dateUserInfo} = useQuery({
+    queryKey: [REACT_QUERY_KEY.USER_INFO],
+    queryFn: getUserInfo,
+    onSuccess: response => {
+      setProfile(response.data?.user);
+      setIsAuthenticated(true);
+    },
+  });
 
-  const chartConfig = {
-    backgroundGradientFrom: '#FFFFFF', // Màu trắng
-    backgroundGradientFromOpacity: 0,
-    backgroundGradientTo: '#FFFFFF', // Màu trắng
-    backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => `blue`,
-    strokeWidth: 2, // optional, default 3
-    barPercentage: 2,
-    useShadowColorFromDataset: false, // optional
-    yAxisLabel: '',
-  };
+  const {isLoading: isTransactionDataLoading, data: transactionData} = useQuery(
+    {
+      queryKey: [REACT_QUERY_KEY.TRANSACTION],
+      queryFn: () => transactionType(''),
+    },
+  );
 
+  const {
+    isLoading: ispercentTransactionDataLoading,
+    data: percentTransactionData,
+  } = useQuery({
+    queryKey: [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'isoWeek'],
+    queryFn: () => percentTransaction('isoWeek'),
+    onSuccess(response) {
+      setDataMostExp(response?.data.data);
+    },
+  });
+
+  const {
+    isLoading: ispercentTransactionMonthDataLoading,
+    data: percentTransactionMonthData,
+  } = useQuery({
+    queryKey: [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'month'],
+    queryFn: () => percentTransaction('month'),
+  });
+
+  const {
+    isLoading: istransactionExpWeekDataLoading,
+    data: transactionExpWeekData,
+  } = useQuery({
+    queryKey: [REACT_QUERY_KEY.TRANSACTION_EXP_WEEK],
+    queryFn: () => transactionExpWeek(),
+    onSuccess(response) {
+      setDataBarChart(response?.data.data)
+      
+    },
+  });
+
+  const {
+    isLoading: istransactionExpMonthDataLoading,
+    data: transactionExpMonthData,
+  } = useQuery({
+    queryKey: [REACT_QUERY_KEY.TRANSACTION_EXP_MONTH],
+    queryFn: () => transactionExpMonth(),
+  });
+  
   return (
     <ScrollView>
-      <View className="p-5 bg-gray-200">
+      <View style={{backgroundColor: theme.backgroundApp}} className={`p-5`}>
         {/* <Text className='text-red-500'>
         {t("helloUser", {name:'Doanh'})}
       </Text> */}
         <View>
-          <Text className="text-[18px]">Tổng số dư</Text>
+          <Text className={`text-[18px] text-${theme.textColor}`}>
+            Tổng số dư
+          </Text>
           <View className="flex flex-row items-center mb-5">
-            <Text className="text-[24px] font-semibold mr-2">
+            <Text
+              style={{color: theme.textColor}}
+              className="text-[24px] font-semibold mr-2">
               {isEyeClose ? '********' : '10,000,000'}
             </Text>
             <TouchableOpacity
@@ -51,16 +107,21 @@ const HomeScreen = () => {
                 setIsEyeClose(!isEyeClose);
               }}>
               {isEyeClose ? (
-                <EyeClose height={20} width={20} />
+                <EyeClose height={20} width={20} fill={`${theme.textColor}`} />
               ) : (
-                <Eye height={20} width={20} />
+                <Eye height={20} width={20} fill={`${theme.textColor}`} />
               )}
             </TouchableOpacity>
           </View>
           {/* My wallet  */}
-          <View className="bg-white rounded-md px-3 py-3">
+          <View
+            style={{backgroundColor: theme.backgroundColor}}
+            className=" rounded-md px-3 py-3 ">
             <View className="flex flex-row justify-between items-center h-10 ">
-              <Text className="font-semibold text-[16px]">Ví của tôi</Text>
+              <Text
+                className={`font-semibold text-[16px] text-${theme.textColor}`}>
+                Ví của tôi
+              </Text>
               <TouchableOpacity
                 onPress={() => {
                   navigate(SCREENS.MY_WALLET_SCREEN);
@@ -73,97 +134,133 @@ const HomeScreen = () => {
             <View className="border-b border-gray-300 mx-1 text-center"></View>
             <View className="flex flex-row justify-between items-center">
               <View className="flex flex-row items-center my-2">
-                <EyeClose height={30} width={30} />
-                <Text className="ml-1 font-semibold">Tiền mặt</Text>
+                <EyeClose height={30} width={30} fill={`${theme.textColor}`} />
+                <Text className={`ml-1 font-semibold text-${theme.textColor}`}>
+                  Tiền mặt
+                </Text>
               </View>
-              <Text className="ml-1 font-semibold text-[18px]">10,000,000</Text>
+              <Text
+                className={`ml-1 font-semibold text-[18px] text-${theme.textColor}`}>
+                10,000,000
+              </Text>
             </View>
             <View></View>
           </View>
 
           {/* expense report */}
           <View className="flex flex-row justify-between items-center mt-4 mb-1">
-            <Text className="font-semibold ">Báo cáo chi tiêu</Text>
-            <TouchableOpacity>
+            <Text style={{color: theme.textColor}} className="font-semibold ">
+              Báo cáo chi tiêu
+            </Text>
+            <TouchableOpacity onPress={() => {navigate((SCREENS.LOGIN_SCREEN))}}>
               <Text className="font-semibold text-green-500">Xem báo cáo</Text>
             </TouchableOpacity>
           </View>
-          <View className="bg-white px-3 rounded-md">
+          <View
+            style={{backgroundColor: theme.backgroundColor}}
+            className="bg-white px-3 rounded-md">
             <View className="flex flex-row justify-center items-center w-full bg-gray-400 h-10 my-3 rounded-md">
               <TouchableOpacity
                 onPress={() => {
                   setSelectViewReport(0);
-                  navigate(SCREENS.ADD_TRANSACTION);
+                  setDataMostExp(percentTransactionData?.data.data);
+                  setDataBarChart(transactionExpWeekData?.data.data)
+                }}
+                style={{
+                  backgroundColor: selectViewReport === 0 ? theme.backgroundColor :'transparent'
                 }}
                 className={classNames(
-                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
-                  {
-                    'bg-white ': selectViewReport === 0,
-                  },
+                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md'
                 )}>
                 <View>
-                  <Text className="text-center">Tuần</Text>
+                  <Text
+                    style={{color: theme.textColor}}
+                    className="text-center">
+                    Tuần
+                  </Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
                   setSelectViewReport(1);
+                  setDataMostExp(percentTransactionMonthData?.data.data);
+                  setDataBarChart(transactionExpMonthData?.data.data)
+                }}
+                style={{
+                  backgroundColor: selectViewReport === 1 ? theme.backgroundColor :'transparent'
                 }}
                 className={classNames(
-                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
-                  {
-                    'bg-white ': selectViewReport === 1,
-                  },
+                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md'
                 )}>
                 <View className="w-[48%]">
-                  <Text className="text-center">Tháng</Text>
+                  <Text
+                    style={{color: theme.textColor}}
+                    className="text-center">
+                    Tháng
+                  </Text>
                 </View>
               </TouchableOpacity>
             </View>
-            <Text className="text-[22px] font-semibold">9,000,000 đ</Text>
+            <Text
+              style={{color: theme.textColor}}
+              className="text-[22px] font-semibold">
+              {selectViewReport === 0
+                ? `${formatNumberWithCommas(
+                    String(percentTransactionData?.data?.totalSpending),
+                  )}đ`
+                : `${formatNumberWithCommas(
+                    String(percentTransactionMonthData?.data?.totalSpending),
+                  )}đ`}
+            </Text>
             <View>
-              <Text className="text-gray-500">{`Tổng chi ${
+              <Text style={{color: theme.textColorBland}}>{`Tổng chi ${
                 selectViewReport === 0 ? 'tuần' : 'tháng'
               } này`}</Text>
             </View>
 
-            <BarChart
-              // style={graphStyle}
-              data={data}
-              width={300}
-              fromZero={true}
-              height={220}
-              yAxisLabel=""
-              yAxisSuffix=""
-              // yAxisLabel="$"
-              chartConfig={chartConfig}
-              withHorizontalLabels={false}
-              withInnerLines={false}
-              showBarTops={true}
-              showValuesOnTopOfBars={true}
-              // getTooltipTextX={}
-              // verticalLabelRotation={30}
-            />
-            <Text className="text-[16px] font-semibold text-gray-500">
+            <View className="ml-3 my-2">
+              {
+                dataBarChart && (
+                  <BarchartHome data={dataBarChart} />
+                )
+                // <CxPieChart />
+              }
+            </View>
+            <Text
+              style={{color: theme.textColorBland}}
+              className="text-[16px] font-semibold">
               Chi tiêu nhiều nhất
             </Text>
-            <CardTransaction isExpenses />
-            <CardTransaction isExpenses />
-            <CardTransaction isExpenses />
+            {dataMostExp && (
+              <FlatList
+                data={dataMostExp.slice(0, 3)}
+                renderItem={({item}) => (
+                  <CardTransaction isExpenses item={item} />
+                )}
+                keyExtractor={item => item.id}
+              />
+            )}
           </View>
 
           {/* Transaction history  */}
           <View className="flex flex-row justify-between items-center mt-4 mb-1">
-            <Text className="font-semibold ">Giao dịch gần đây</Text>
-            <TouchableOpacity>
+            <Text style={{color: theme.textColor}} className="font-semibold ">
+              Giao dịch gần đây
+            </Text>
+            <TouchableOpacity onPress={() => {navigate(t(SCREENS.TRANSACTION_HISTORY));}}>
               <Text className="font-semibold text-green-500">Xem báo cáo</Text>
             </TouchableOpacity>
           </View>
-          <View className='bg-white px-3 rounded-md'>
-            <CardTransaction isTransactionRecent />
-            <CardTransaction isTransactionRecent />
-            <CardTransaction isTransactionRecent />
-
+          <View
+            style={{backgroundColor: theme.backgroundColor}}
+            className="px-3 rounded-md">
+            <FlatList
+              data={transactionData?.data.transactions.slice(0, 4)}
+              renderItem={({item}) => (
+                <CardTransaction isTransactionRecent item={item} />
+              )}
+              keyExtractor={item => item.id}
+            />
           </View>
         </View>
       </View>

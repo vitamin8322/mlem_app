@@ -29,15 +29,23 @@ import Invest from './images/category/Invest.svg'
 import ArrowLeft from './images/category/ArrowLeft.svg'
 import WouldInternet from './images/category/WouldInternet.svg'
 import Option from './images/category/Option.svg'
-import Language from './images/category/Language.svg'
+import Check from './images/category/Check.svg'
+import Test from './images/test.png'
+import Language from './images/account/Language.svg'
+import Color from './images/account/Color.svg'
+import Logout from './images/account/Logout.svg'
+import English from './images/language/English.svg'
+import Vietnam from './images/language/Vietnam.svg'
 
 export {
-    Icon, StartApp, Background,
+    Icon, StartApp, Background,Test,
     Home, SaleReport, HomeActive, TransactionHistory, TransactionHistoryActive, Account, AccountActive, Report, ReportActive, Add,
-    ChevronLeft,
+    ChevronLeft, Check,
     Eye, EyeClose,
     Dinner, Car, Cloth, Cosmetics, Education, House, Medical, Smartphone,
     Wallet, Pig, Gift, Invest,
-    ArrowLeft, WouldInternet, Option, Language
+    ArrowLeft, WouldInternet, Option, Language,
+    Color,
+    English, Vietnam, Logout
 
 }

@@ -1,75 +1,67 @@
+import CxPieChart from '@shared-components/CxPieChart';
+import {Dinner, StartApp, Test} from 'assets';
 import React from 'react';
-import {Text, View} from 'react-native';
-import {StackedBarChart} from 'react-native-chart-kit';
-import {BarChart, PieChart, stackDataItem} from 'react-native-gifted-charts';
-type Props = {};
+import {View, Text, Image} from 'react-native';
+import Svg, {Circle, G, Line, Text as TextSvg} from 'react-native-svg';
+import {PieChart} from 'react-native-svg-charts';
+const ReportScreen = () => {
+  const data = [50, 10, 40, 95, -4, -24, 85, 91];
 
-const ReportScreen = (props: Props) => {
-  const stackData:Array<stackDataItem> = [
-    {
-      stacks: [
-        {value: 10, color: 'orange'},
-        {value: 20, color: '#4ABFF4', marginBottom: 2},
-      ],
-      label: 'Jan',
-    },
-    {
-      stacks: [
-        {value: 10, color: '#4ABFF4'},
-        {value: -15, color: '#28B2B3', marginBottom: 2},
-      ],
-      label: 'Mar',
-    },
-    {
-      stacks: [
-        {value: 14, color: 'orange'},
-        {value: 18, color: '#4ABFF4', marginBottom: 2},
-      ],
-      label: '01/01-07/01',
-    },
-    {
-      stacks: [
-        {value: 7, color: '#4ABFF4'},
-        {value: -10, color: '#28B2B3', marginBottom: 2},
-      ],
-      label: 'Mar',
-    },
-  ];
-  const xAxisLabelTextStyle = {
-    fontSize: 7, 
-    marginBottom: 10
+  const randomColor = () =>
+    ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(
+      0,
+      7,
+    );
+
+  const pieData = data
+    .filter(value => value > 0)
+    .map((value, index) => ({
+      value,
+      svg: {fill: randomColor()},
+      key: `pie-${index}`,
+    }));
+
+  const Labels = ({slices, height, width}: any) => {
+    return slices.map((slice: any, index: any) => {
+      const {labelCentroid, pieCentroid, data} = slice;
+      
+      return (
+        <G key={index}>
+          <Line
+            x1={labelCentroid[0]}
+            y1={labelCentroid[1]}
+            x2={pieCentroid[0]}
+            y2={pieCentroid[1]}
+            stroke={data.svg.fill}
+          />
+            <TextSvg
+              x={labelCentroid[0] - 15}
+              y={labelCentroid[1] +5}>
+              12312
+            </TextSvg>
+        </G>
+      );
+    });
   };
-  return (
-    <>
-      <Text>ReportScreen</Text>
-      <View>
-        <BarChart
-          width={340}
-          rotateLabel
-          noOfSections={5}
-          stackData={stackData}
-          xAxisLabelTextStyle={xAxisLabelTextStyle}
-          renderTooltip={(item:Array<stackDataItem>, index:number) => {
-            // console.log(item);
-            return (
-              <View
-                style={{
-                  marginBottom: 20,
-                  marginLeft: -6,
-                  backgroundColor: '#ffcefe',
-                  paddingHorizontal: 6,
-                  paddingVertical: 4,
-                  borderRadius: 4,
-                  width:30
-                }}>
-                <Text>{item.stacks[0].value}</Text>
-              </View>
-            );
-          }}
-        />
-      </View>
 
-    </>
+  return (
+    // <PieChart
+    //   style={{height: 400, marginTop: 10}}
+    //   data={pieData}
+    //   innerRadius={50}
+    //   outerRadius={75}
+    //   labelRadius={100}
+    //   onPress={(event:any, slices:any) => {
+    //     if (slices.length > 0) {
+    //       const { index } = slices[0];
+    //       // onSlicePress(slices[0], index);
+    //       console.log(index);
+          
+    //     }
+    //   }}>
+    //   <Labels />
+    // </PieChart>
+    <CxPieChart />
   );
 };
 

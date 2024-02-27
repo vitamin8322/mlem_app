@@ -10,7 +10,7 @@ class Http {
   private accessToken: string | null | undefined
   constructor() {
     this.instance = axios.create({
-      baseURL: 'API_URL',
+      baseURL: 'http://10.40.11.36:8888',
       timeout: 30000,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
@@ -36,7 +36,9 @@ class Http {
       async (response) => {
         const { url } = response.config;
         if (url === URL_LOGIN || url === URL_REGISTER || url === URL_SOCIAL_AUTHENTICATION || url === URL_USER_INFO) {
-          const data = response.data.data as User
+          const data = response.data as User
+          // console.log(2123,response.data);
+          
           this.accessToken = data.access_token
           
           if (data && data.access_token) {
@@ -52,6 +54,8 @@ class Http {
           await asyncStorageService.removeValue('profile');
           await asyncStorageService.removeValue('access_token');
         }
+        console.log('error', error);
+        
         return Promise.reject(error);
       }
     );

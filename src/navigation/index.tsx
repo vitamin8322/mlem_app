@@ -5,20 +5,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { isReadyRef, navigationRef } from "react-navigation-helpers";
 import LoginScreen from "@screens/login/LoginScreen";
 import RegisterSceen from "@screens/register/RegisterScreen";
+import { useContext } from "react";
+import { AppContext } from "contexts/app.context";
 
 const Stack = createStackNavigator();
-// const LightTheme: ExtendedTheme = {
-//     dark: false,
-//     colors: {
-//       ...DefaultTheme.colors,
-//       ...palette,
-//     },
-//   };
+
 const Navigation = () => {
-//   const { isAuthenticated } = useContext(AppContext);
-//   React.useEffect((): any => {
-//     return () => (isReadyRef.current = false);
-//   }, []);
+  const { isAuthenticated } = useContext(AppContext);
 
   return (
     <NavigationContainer
@@ -29,7 +22,7 @@ const Navigation = () => {
     //   theme={LightTheme}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {false && (
+        {!isAuthenticated && (
           <>
             <Stack.Group screenOptions={{ headerShown: false }}>
               <Stack.Screen name={SCREENS.LOGIN_SCREEN} component={LoginScreen} />
@@ -39,13 +32,6 @@ const Navigation = () => {
                 component={ForgotPassword}
               /> */}
             </Stack.Group>
-
-            {/* <Stack.Group screenOptions={{ presentation: "modal" }}>
-              <Stack.Screen
-                name={SCREENS.MODAL_AUTHENTICATION}
-                component={ModalAuthentication}
-              />
-            </Stack.Group> */}
           </>
         )}
         <Stack.Group>

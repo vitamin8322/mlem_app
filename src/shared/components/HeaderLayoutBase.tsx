@@ -1,5 +1,7 @@
 import { ArrowLeft } from 'assets';
 import classNames from 'classnames';
+import { useTheme } from 'contexts/app.context';
+import { background } from 'native-base/lib/typescript/theme/styled-system';
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Icon, {IconType} from 'react-native-dynamic-vector-icons';
@@ -15,20 +17,20 @@ type HeaderLayoutBaseType = {
 };
 
 const HeaderLayoutBase = (props: HeaderLayoutBaseType) => {
+  const { theme } = useTheme();
   const {isBack, nameScreen, checkIsBack, setCheckIsBack} = props;
-  console.log(isBack);
 
   return (
-    <View style={styles.shadow} className='flex flex-row items-center border-gray-200 rounded bg-white h-16 px-3'>
+    <View style={[styles.shadow, {backgroundColor: theme.backgroundColor}]} className='flex flex-row items-center border-gray-200 rounded h-16 px-3'>
       <View>
         <TouchableOpacity
           onPress={() => {
             goBack();
           }}>
-            <ArrowLeft height={30} width={30} />
+            <ArrowLeft height={30} width={30} fill={theme.textColor}/>
         </TouchableOpacity>
       </View>
-      <Text className={classNames('text-[18px] font-semibold text-black ml-3')}>
+      <Text style={{color: theme.textColor}} className={classNames('text-[18px] font-semibold')}>
         {nameScreen}
       </Text>
     </View>

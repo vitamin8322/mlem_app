@@ -1,11 +1,16 @@
 import {Language} from 'assets';
-import React from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import React, { useContext } from 'react';
+import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 // import c from '@theme'
-
+import {AppContext, useTheme} from 'contexts/app.context';
+import {LIST_ACCOUNT_SCREEN, SCREENS} from '@shared-constants';
+import {navigate} from 'react-navigation-helpers';
+import { asyncStorageService } from 'utils/storage';
 type Props = {};
 
 const AccountScreen = (props: Props) => {
+  const {theme} = useTheme();
+  const { setIsAuthenticated, setProfile } = useContext(AppContext);
   return (
     <>
       <ScrollView>
@@ -15,18 +20,33 @@ const AccountScreen = (props: Props) => {
             <Text>Tên Email</Text>
           </View>
         </View>
-        <View className="flex flex-row items-center bg-white border-b border-b-gray-400 p-2 pl-4">
-          <Language height={25} width={25} />
-          <Text className="ml-2 font-semibold text-[16px]">
-            Thay đổi ngôn ngữ
-          </Text>
-        </View>
-        <View className="flex flex-row items-center bg-white border-b border-b-gray-400 p-2 pl-4">
-          <Language height={25} width={25} />
-          <Text className="ml-2 font-semibold text-[16px]">
-            Thay đổi ngôn ngữ
-          </Text>
-        </View>
+        <FlatList
+          data={LIST_ACCOUNT_SCREEN}
+          renderItem={({item}) => (
+            <TouchableOpacity
+              onPress={async() => {
+                if (item.navigate) {
+                  navigate(item?.navigate);
+                }
+                if (item.id === '03') {
+                  
+                  await asyncStorageService.removeValue('access_token')
+                  await asyncStorageService.removeValue('profile')
+                  setIsAuthenticated(false)
+                  setProfile(null)
+                  console.log(123);
+                }
+              }}>
+              <View className="flex flex-row items-center bg-white border-b border-b-gray-400 p-2 pl-4">
+                {React.createElement(item.icon, {height: 20, width: 20})}
+                <Text className="ml-2 font-semibold text-[16px]">
+                  {item.title}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={item => item.id}
+        />
       </ScrollView>
     </>
   );

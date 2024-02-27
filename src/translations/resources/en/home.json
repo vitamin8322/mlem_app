@@ -1,5 +1,6 @@
 {
   "helloUser": "Hi, my name is {{name}}",
   "home": "Home",
-  "transaction": "Transaction"
+  "transaction": "Transaction",
+  "selectLanguage": "Select Language"
 }

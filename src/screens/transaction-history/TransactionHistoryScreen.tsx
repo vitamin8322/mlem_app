@@ -1,83 +1,85 @@
+import {dailyTransactions} from '@services/apis/transaction.api';
+import DayTransaction from '@shared-components/DayTransaction';
+import {REACT_QUERY_KEY, formatNumberWithCommas} from '@shared-constants';
+import {useQuery} from '@tanstack/react-query';
+import {Dinner} from 'assets';
 import classNames from 'classnames';
 import React, {useCallback, useMemo, useState} from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {Agenda, Calendar} from 'react-native-calendars';
+import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {Calendar} from 'react-native-calendars';
 type Props = {};
 const TransactionHistoryScreen = (props: Props) => {
-  const [selectedDate, setSelectedDate] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
-  const onDayPress = useCallback((day: any) => {
-    // console.log(day);
-    setSelectedDate(day.dateString);
-  }, []);
+  const {
+    isLoading: isdailyTransactionsDataLoading,
+    data: dailyTransactionsData,
+  } = useQuery({
+    queryKey: [REACT_QUERY_KEY.DAILY_TRANSACTION, currentYear, currentMonth],
+    queryFn: () => dailyTransactions(currentYear,currentMonth),
+  });
 
   const onMonthChange = useCallback((date: any) => {
-    // console.log(date.month);
     setCurrentMonth(date.month);
-  }, []);
-  const markedDates = useMemo(
-    () => ({
-      '2024-02-01': {selected: true, marked: true, selectedColor: 'red'},
-      '2024-02-02': {marked: true},
-      '2024-02-03': {
-        selected: true,
-        marked: true,
-        selectedColor: 'red',
-        income: '123',
-        expense: '10',
-      },
-    }),
-    [],
-  );
+    setCurrentYear(date.year);
+  }, [currentMonth, currentYear]);
+
   const dayComponent = useMemo(() => {
-    const currentDate = new Date();
-    const currentDay = currentDate.getDate();
     return ({date, state, marking}: any) => {
-      const isCurrentMonth = currentMonth === date?.month;
-      const isCurrentDay = isCurrentMonth && currentDay === date?.day;
-      const isDifferentMonth = !isCurrentMonth;
       return (
         <View
           className={classNames(
-            'w-14 h-[46px] border border-gray-400',
-            {'bg-gray-400': isDifferentMonth},
-            {'bg-yellow-200': isCurrentDay},
+            'w-14 h-[46px] border border-gray-400 mb-[-15px]',
+            {'bg-gray-400': state === 'disabled'},
+            {'bg-yellow-200': state === 'today'},
+            {'bg-white': state !== 'disabled' && state !== 'today'},
           )}>
-          <TouchableOpacity onPress={() => onDayPress(date)}>
+          <TouchableOpacity>
             <Text className="ml-1 text-[12px] mb-0">{date?.day}</Text>
             <Text className="text-[10px] text-blue-500 font-semibold text-right">
-              {marking?.income}
+              {marking?.revenue !== '0' && marking?.revenue
+                ? formatNumberWithCommas(String(marking?.revenue))
+                : ''}
             </Text>
             <Text className="text-[10px] text-red-500 font-semibold text-right mb-[-5px]">
-              {marking?.expense}
+              {marking?.expense !== '0' && marking?.expense
+                ? formatNumberWithCommas(String(marking?.expense))
+                : ''}
             </Text>
           </TouchableOpacity>
         </View>
       );
     };
-  }, [currentMonth, onDayPress]);
+  }, [currentMonth, currentYear]);
 
   return (
     <View>
-      <Calendar
-        onMonthChange={onMonthChange}
-        markedDates={markedDates}
-        dayComponent={dayComponent}
+      <View className="mb-3">
+        <Calendar
+          onMonthChange={onMonthChange}
+          markedDates={dailyTransactionsData?.data.data.calender}
+          dayComponent={dayComponent}
         />
+      </View>
+      <FlatList
+        data={dailyTransactionsData?.data.data.day}
+        extraData={dailyTransactionsData?.data.data.calender}
+        renderItem={({item}: any) => {
+          
+          return (
+            <DayTransaction
+              dataDay={item}
+              extraData={dailyTransactionsData?.data.data.calender}
+            />
+          );
+        }}
+        keyExtractor={item => `${item[0]._id}`}
+        contentContainerStyle={{
+          paddingBottom: 370,
+        }}
+      />
     </View>
   );
 };
 export default TransactionHistoryScreen;
-
-// theme={{
-//   calendarBackground: '#166088',
-//   textSectionTitleColor: '#DBE9EE',
-//   textMonthFontWeight: 'bold',
-//   monthTextColor: '#DBE9EE',
-//   arrowColor: '#DBE9EE',
-//   dayTextColor: '#DBE9EE',
-//   textDisabledColor: '#729DAF',
-//   selectedDayTextColor: '#166088',
-//   dotColor: '#DBE9EE',
-// }}

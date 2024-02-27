@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {LogBox, SafeAreaView, Text, View} from 'react-native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import SplashScreen from 'react-native-splash-screen';
@@ -9,6 +9,7 @@ import {I18nextProvider} from 'react-i18next';
 import Navigation from 'navigation';
 import {MenuProvider} from 'react-native-popup-menu';
 import {asyncStorageService} from 'utils/storage';
+import {AppProvider} from 'contexts/app.context';
 const queryClient = new QueryClient();
 
 function App(): JSX.Element {
@@ -28,16 +29,19 @@ function App(): JSX.Element {
 
     initializeLanguage();
   }, []);
+
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <NativeBaseProvider>
-          <MenuProvider>
-            <I18nextProvider i18n={i18n}>
-              <Navigation />
-            </I18nextProvider>
-          </MenuProvider>
-        </NativeBaseProvider>
+        <AppProvider>
+          <NativeBaseProvider>
+            <MenuProvider>
+              <I18nextProvider i18n={i18n}>
+                <Navigation />
+              </I18nextProvider>
+            </MenuProvider>
+          </NativeBaseProvider>
+        </AppProvider>
       </QueryClientProvider>
     </>
   );

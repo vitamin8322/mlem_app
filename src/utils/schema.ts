@@ -8,13 +8,12 @@ export const authSchema = yup.object({
     lname: yup.string().required('Last Name is required'),
     userName: yup.string().required('User Name is required'),
     confirm_password: yup.string().oneOf([yup.ref('new_password')], 'Confirm password must match'),
-    phone_number: yup.string().required('Phone Number is required').matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Phone Number is not valid'),
-    address:  yup.string().required('Address is required'),
-    name_restaurant:  yup.string().required('Name Restaurant is required'),
+    // phone_number: yup.string().required('Phone Number is required').matches(/^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/, 'Phone Number is not valid'),
+    name:  yup.string().required('Name is required'),
 })
 
-export const loginSchema = authSchema.pick(['userName', 'password'])
-export const registerSchema = authSchema.pick(['name_restaurant', 'password', 'email', 'phone_number', 'address'])
+export const loginSchema = authSchema.pick(['email', 'password'])
+export const registerSchema = authSchema.pick(['name', 'password', 'email'])
 
 export type LoginSchema = yup.InferType<typeof loginSchema>
 export type RegisterSchema = yup.InferType<typeof registerSchema>

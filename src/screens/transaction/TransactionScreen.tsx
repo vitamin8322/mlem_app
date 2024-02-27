@@ -15,7 +15,14 @@ import 'moment/locale/vi';
 import Modal from 'react-native-modal/dist/modal';
 import {Dinner} from 'assets';
 import CardCategory from '@shared-components/CardCategory';
-import {LIST_ITEM_EXPENSES, LIST_ITEM_REVENUE} from '@shared-constants';
+import {
+  LIST_ITEM_EXPENSES,
+  LIST_ITEM_REVENUE,
+  REACT_QUERY_KEY,
+} from '@shared-constants';
+import {useTheme} from 'contexts/app.context';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {createTransaction} from '@services/apis/transaction.api';
 type Props = {};
 LocaleConfig.locales['fr'] = {
   monthNames: [
@@ -60,96 +67,141 @@ LocaleConfig.locales['fr'] = {
 };
 
 const TransactionScreen = (props: Props) => {
+  const {theme} = useTheme();
   const inputRef = useRef(null);
 
+  const queryClient = useQueryClient();
+
   const [selectTransaction, setSelectTransaction] = useState<number>(0);
-  const [selected, setSelected] = useState<any>();
+  const [selectedDateModal, setSelectedDateModal] = useState<any>();
+  const [selectedDate, setSelectedDate] = useState<any>(new Date());
   const [isModalVisible, setModalVisible] = useState(false);
   const [valueMoney, setValueMoney] = useState<string>('0');
   const [cardActive, setCardActive] = useState(0);
+  const [idCategory, setIdCategory] = useState('');
+  const [note, setNote] = useState('');
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-  const markedDates = {
-    '2024-01-01': {marked: true, dotColor: 'red'},
-    '2024-01-05': {marked: true, dotColor: 'green'},
-    '2024-01-10': {marked: true, dotColor: 'blue'},
+  const transactionMutation = useMutation({
+    mutationFn: createTransaction,
+  });
+
+  const handleTransaction = () => {
+    if (valueMoney === '0') {
+      return;
+    }
+    const body = {
+      money: Number(valueMoney),
+      note: note,
+      type: selectTransaction === 0 ? 'exp' : 'rev',
+      date: selectedDate,
+      idCategory: idCategory,
+      wallet: '65cdde71b2d1e4c3c205eeab',
+    };
+
+    transactionMutation.mutate(body, {
+      onSuccess(response) {
+        console.log(response.data);
+        setValueMoney('0');
+        queryClient.invalidateQueries({
+          queryKey: [REACT_QUERY_KEY.TRANSACTION],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [REACT_QUERY_KEY.PERCENT_TRANSACTION],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [REACT_QUERY_KEY.DAILY_TRANSACTION],
+        });
+      },
+      onError(error) {
+        console.log(error);
+      },
+    });
   };
-  // useEffect(() => {
-  //   if (inputRef && inputRef.current) {
-  //     inputRef.current.focus();
-  //   }
-  // }, []);
 
   return (
     <>
-      <View className="px-3">
+      <View
+        style={{backgroundColor: theme.backgroundApp, height: '100%'}}
+        className="px-3">
         <View className="flex flex-row justify-center items-center w-full bg-gray-400 h-10 my-3 rounded-md">
           <TouchableOpacity
             onPress={() => {
               setSelectTransaction(0);
-              setCardActive(0)
+              setIdCategory('exp01');
+            }}
+            style={{
+              backgroundColor:
+                selectTransaction === 0 ? theme.backgroundColor : 'transparent',
             }}
             className={classNames(
               'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
-              {
-                'bg-white ': selectTransaction === 0,
-              },
             )}>
             <View>
-              <Text className="text-center">Tiền chi</Text>
+              <Text style={{color: theme.textColor}} className="text-center">
+                Tiền chi
+              </Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              setCardActive(0)
+              setIdCategory('rev01');
               setSelectTransaction(1);
+            }}
+            style={{
+              backgroundColor:
+                selectTransaction === 1 ? theme.backgroundColor : 'transparent',
             }}
             className={classNames(
               'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
-              {
-                'bg-white ': selectTransaction === 1,
-              },
             )}>
             <View className="w-[48%]">
-              <Text className="text-center">Tiền thu</Text>
+              <Text style={{color: theme.textColor}} className="text-center">
+                Tiền thu
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
         <View className="flex gap-y-2">
           <View className="flex flex-row justify-center items-center h-12 ">
             <View className="w-3/12">
-              <Text>Ngày</Text>
+              <Text style={{color: theme.textColor}}>Ngày</Text>
             </View>
             <View className="w-9/12">
               <TouchableOpacity
                 onPress={toggleModal}
                 className="w-full bg-slate-300 h-12 rounded-md">
                 <Text className="text-center mt-3 font-semibold text-[18px]">
-                  {moment(selected).format('DD/MM/YYYY (dd)')}
+                  {moment(selectedDate).format('DD/MM/YYYY (dd)')}
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
           <View className="flex flex-row justify-center items-center ">
             <View className="w-3/12">
-              <Text>Ghi chú</Text>
+              <Text style={{color: theme.textColor}}>Ghi chú</Text>
             </View>
             <View className="w-9/12">
               <Input
-                classNameInput="w-full border border-slate-200 rounded-md h-20 px-2"
+                style={{color: theme.textColor, borderColor: theme.textColor}}
+                classNameInput="w-full border border-slate-200 rounded-md h-20 px-2 "
                 multiline
+                onChangeText={text => {
+                  setNote(text);
+                }}
               />
             </View>
           </View>
           <View className="flex flex-row justify-center items-center ">
             <View className="w-3/12">
-              <Text>Tiền chi</Text>
+              <Text style={{color: theme.textColor}}>Tiền chi</Text>
             </View>
             <View className="w-9/12">
               <TextInput
                 ref={inputRef}
+                style={{color: theme.textColor, borderColor: theme.textColor}}
                 className="w-full border border-slate-200 rounded-md h-12 px-2 text-[18px] font-semibold"
                 keyboardType="numeric"
                 value={valueMoney}
@@ -168,7 +220,9 @@ const TransactionScreen = (props: Props) => {
             </View>
           </View>
           <View className=" h-[350px]">
-            <Text className="">Danh mục:</Text>
+            <Text style={{color: theme.textColor}} className="">
+              Danh mục:
+            </Text>
             <ScrollView nestedScrollEnabled={true}>
               <View className="flex flex-row items-center gap-2 flex-wrap px-2 mt-1">
                 {selectTransaction === 0
@@ -176,8 +230,8 @@ const TransactionScreen = (props: Props) => {
                       return (
                         <CardCategory
                           key={index}
-                          cardActive={cardActive}
-                          setCardActive={setCardActive}
+                          idCategory={idCategory}
+                          setIdCategory={setIdCategory}
                           index={index}
                           item={item}
                         />
@@ -187,8 +241,8 @@ const TransactionScreen = (props: Props) => {
                       return (
                         <CardCategory
                           key={index}
-                          cardActive={cardActive}
-                          setCardActive={setCardActive}
+                          idCategory={idCategory}
+                          setIdCategory={setIdCategory}
                           index={index}
                           item={item}
                         />
@@ -201,7 +255,8 @@ const TransactionScreen = (props: Props) => {
             disabled={valueMoney === '0'}
             className={classNames('bg-slate-300 mx-4 h-10 rounded-md', {
               'bg-green-600': valueMoney !== '0',
-            })}>
+            })}
+            onPress={handleTransaction}>
             <Text
               className={classNames(
                 'text-center h-10 mt-2 font-semibold text-[18px]',
@@ -222,10 +277,10 @@ const TransactionScreen = (props: Props) => {
         <View className="flex">
           <Calendar
             onDayPress={day => {
-              setSelected(day.dateString);
+              setSelectedDateModal(day.dateString);
             }}
             markedDates={{
-              [selected]: {selected: true, disableTouchEvent: true},
+              [selectedDateModal]: {selected: true, disableTouchEvent: true},
             }}
           />
           {/* <Button title="Hide modal" onPress={toggleModal} /> */}
@@ -235,7 +290,12 @@ const TransactionScreen = (props: Props) => {
                 Hủy
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity className="w-16 h-10" onPress={toggleModal}>
+            <TouchableOpacity
+              className="w-16 h-10"
+              onPress={() => {
+                toggleModal();
+                setSelectedDate(selectedDateModal);
+              }}>
               <Text className="text-blue-400 font-semibold text-[18px]">
                 Ok
               </Text>

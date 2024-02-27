@@ -43,46 +43,16 @@ const RegisterSceen = () => {
         </Text>
         <Controller
           control={control}
-          name="name_restaurant"
+          name="name"
           render={({field}) => (
             <Input
               classNameInput="w-full border border-slate-200 rounded-md h-12 px-2 text-white"
-              errorMessage={errors.name_restaurant?.message}
+              errorMessage={errors.name?.message}
               classNameError="text-red-500"
               placeholderColor="#ACA3A3"
-              placeholder="Tên nhà hàng"
+              placeholder="Tên"
               value={field.value}
               onChangeText={field.onChange}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="address"
-          render={({field}) => (
-            <Input
-              classNameError="text-red-500"
-              classNameInput="w-full border border-slate-200 rounded-md  h-12 px-2 text-black"
-              errorMessage={errors.address?.message}
-              placeholderColor="#ACA3A3"
-              placeholder="Địa chỉ nhà hàng"
-              onChangeText={field.onChange}
-              value={field.value}
-            />
-          )}
-        />
-        <Controller
-          control={control}
-          name="phone_number"
-          render={({field}) => (
-            <Input
-              classNameError="text-red-500"
-              classNameInput="w-full border border-slate-200 rounded-md  h-12 px-2 text-black"
-              errorMessage={errors.phone_number?.message}
-              placeholderColor="#ACA3A3"
-              placeholder="Số điện thoại"
-              onChangeText={field.onChange}
-              value={field.value}
             />
           )}
         />

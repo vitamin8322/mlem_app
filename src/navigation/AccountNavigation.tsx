@@ -4,6 +4,7 @@ import { SCREENS } from '@shared-constants';
 import TransactionHistoryScreen from '@screens/transaction-history';
 import LoginScreen from '@screens/login';
 import AccountScreen from '@screens/account';
+import LanguageScreen from '@screens/languege';
 const Stack = createStackNavigator();
 
 const AccountNavigation = () => {
@@ -14,7 +15,7 @@ const AccountNavigation = () => {
     >
       {/* <Stack.Screen name={SCREENS.LOGIN_SCREEN} component={LoginScreen} /> */}
       <Stack.Screen name={SCREENS.ACCOUNT} component={AccountScreen} />
-        
+      <Stack.Screen name={SCREENS.LANGUAGE_SCREEN} component={LanguageScreen} />
     </Stack.Navigator>
   )
 }
