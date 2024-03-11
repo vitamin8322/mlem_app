@@ -17,13 +17,16 @@ const TransactionHistoryScreen = (props: Props) => {
     data: dailyTransactionsData,
   } = useQuery({
     queryKey: [REACT_QUERY_KEY.DAILY_TRANSACTION, currentYear, currentMonth],
-    queryFn: () => dailyTransactions(currentYear,currentMonth),
+    queryFn: () => dailyTransactions(currentYear, currentMonth),
   });
 
-  const onMonthChange = useCallback((date: any) => {
-    setCurrentMonth(date.month);
-    setCurrentYear(date.year);
-  }, [currentMonth, currentYear]);
+  const onMonthChange = useCallback(
+    (date: any) => {
+      setCurrentMonth(date.month);
+      setCurrentYear(date.year);
+    },
+    [currentMonth, currentYear],
+  );
 
   const dayComponent = useMemo(() => {
     return ({date, state, marking}: any) => {
@@ -66,7 +69,6 @@ const TransactionHistoryScreen = (props: Props) => {
         data={dailyTransactionsData?.data.data.day}
         extraData={dailyTransactionsData?.data.data.calender}
         renderItem={({item}: any) => {
-          
           return (
             <DayTransaction
               dataDay={item}

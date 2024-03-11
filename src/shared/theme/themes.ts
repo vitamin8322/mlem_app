@@ -62,33 +62,33 @@ export type Theme = {
   darkerPrimaryColor: string;
   secondaryColor: string;
   lightColor: string;
+  textColor: string;
+  textColorBland: string;
+  backgroundColor: string;
+  backgroundApp: string;
 };
 
 // Define your themes
-export const THEMES: { [key: string]: Theme } = {
+export const THEMES: {[key: string]: Theme} = {
   base: {
     primaryColor: '#FCDE89',
     darkerPrimaryColor: '#C9AB56',
     secondaryColor: '#424646',
     lightColor: 'white',
+    textColor: 'black',
+    textColorBland: '#6b7280',
+    backgroundColor: 'white',
+    backgroundApp: '#e5e7eb',
   },
-  yellow: {
+  black: {
     primaryColor: '#FCDE89',
     darkerPrimaryColor: '#C9AB56',
     secondaryColor: '#424646',
-    lightColor: 'white',
-  },
-  blue: {
-    primaryColor: '#37A6E0',
-    darkerPrimaryColor: '#1163F3',
-    secondaryColor: '#262626',
-    lightColor: 'white',
-  },
-  green: {
-    primaryColor: '#25E47B',
-    darkerPrimaryColor: '#16894A',
-    secondaryColor: '#222222',
-    lightColor: 'white',
+    lightColor: 'blue',
+    textColor: 'white',
+    textColorBland: '#c8cbcf',
+    backgroundColor: '#424646',
+    backgroundApp: 'black',
   },
 };
 

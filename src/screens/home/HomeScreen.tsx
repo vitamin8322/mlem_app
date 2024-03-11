@@ -1,18 +1,4 @@
-import {AccountActive, Dinner, Eye, EyeClose} from 'assets';
-import React, {useContext, useEffect, useState} from 'react';
-import {useTranslation} from 'react-i18next';
-import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import classNames from 'classnames';
-import {navigate} from 'react-navigation-helpers';
-import {
-  REACT_QUERY_KEY,
-  SCREENS,
-  formatNumberWithCommas,
-} from '@shared-constants';
-import CardTransaction from '@shared-components/CardTransaction';
-import {AppContext, useTheme} from 'contexts/app.context';
-import {useQuery} from '@tanstack/react-query';
-import {getUserInfo} from '@services/apis/auth.api';
+import { getUserInfo } from '@services/apis/auth.api';
 import {
   percentTransaction,
   transactionExpMonth,
@@ -20,16 +6,30 @@ import {
   transactionType,
 } from '@services/apis/transaction.api';
 import BarchartHome from '@shared-components/BarchartHome';
+import CardTransaction from '@shared-components/CardTransaction';
+import {
+  REACT_QUERY_KEY,
+  SCREENS,
+  formatNumberWithCommas,
+} from '@shared-constants';
+import { useQuery } from '@tanstack/react-query';
+import { Eye, EyeClose } from 'assets';
+import classNames from 'classnames';
+import { AppContext, useTheme } from 'contexts/app.context';
+import React, { useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { navigate } from 'react-navigation-helpers';
 
 const HomeScreen = () => {
-  const {t, i18n} = useTranslation('home');
+  const {t} = useTranslation('home');
   const {theme} = useTheme();
-  const {setIsAuthenticated, setProfile, profile} = useContext(AppContext);
+  const {setIsAuthenticated, setProfile} = useContext(AppContext);
 
   const [isEyeClose, setIsEyeClose] = useState(false);
   const [selectViewReport, setSelectViewReport] = useState(0);
   const [dataMostExp, setDataMostExp] = useState();
-  const [dataBarChart, setDataBarChart] = useState()
+  const [dataBarChart, setDataBarChart] = useState();
 
   const {data: dateUserInfo} = useQuery({
     queryKey: [REACT_QUERY_KEY.USER_INFO],
@@ -73,8 +73,7 @@ const HomeScreen = () => {
     queryKey: [REACT_QUERY_KEY.TRANSACTION_EXP_WEEK],
     queryFn: () => transactionExpWeek(),
     onSuccess(response) {
-      setDataBarChart(response?.data.data)
-      
+      setDataBarChart(response?.data.data);
     },
   });
 
@@ -85,9 +84,9 @@ const HomeScreen = () => {
     queryKey: [REACT_QUERY_KEY.TRANSACTION_EXP_MONTH],
     queryFn: () => transactionExpMonth(),
   });
-  
+
   return (
-    <ScrollView>
+    <ScrollView nestedScrollEnabled={true}>
       <View style={{backgroundColor: theme.backgroundApp}} className={`p-5`}>
         {/* <Text className='text-red-500'>
         {t("helloUser", {name:'Doanh'})}
@@ -152,7 +151,10 @@ const HomeScreen = () => {
             <Text style={{color: theme.textColor}} className="font-semibold ">
               Báo cáo chi tiêu
             </Text>
-            <TouchableOpacity onPress={() => {navigate((SCREENS.LOGIN_SCREEN))}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigate(SCREENS.LOGIN_SCREEN);
+              }}>
               <Text className="font-semibold text-green-500">Xem báo cáo</Text>
             </TouchableOpacity>
           </View>
@@ -164,13 +166,16 @@ const HomeScreen = () => {
                 onPress={() => {
                   setSelectViewReport(0);
                   setDataMostExp(percentTransactionData?.data.data);
-                  setDataBarChart(transactionExpWeekData?.data.data)
+                  setDataBarChart(transactionExpWeekData?.data.data);
                 }}
                 style={{
-                  backgroundColor: selectViewReport === 0 ? theme.backgroundColor :'transparent'
+                  backgroundColor:
+                    selectViewReport === 0
+                      ? theme.backgroundColor
+                      : 'transparent',
                 }}
                 className={classNames(
-                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md'
+                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
                 )}>
                 <View>
                   <Text
@@ -184,13 +189,16 @@ const HomeScreen = () => {
                 onPress={() => {
                   setSelectViewReport(1);
                   setDataMostExp(percentTransactionMonthData?.data.data);
-                  setDataBarChart(transactionExpMonthData?.data.data)
+                  setDataBarChart(transactionExpMonthData?.data.data);
                 }}
                 style={{
-                  backgroundColor: selectViewReport === 1 ? theme.backgroundColor :'transparent'
+                  backgroundColor:
+                    selectViewReport === 1
+                      ? theme.backgroundColor
+                      : 'transparent',
                 }}
                 className={classNames(
-                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md'
+                  'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
                 )}>
                 <View className="w-[48%]">
                   <Text
@@ -220,9 +228,7 @@ const HomeScreen = () => {
 
             <View className="ml-3 my-2">
               {
-                dataBarChart && (
-                  <BarchartHome data={dataBarChart} />
-                )
+                dataBarChart && <BarchartHome data={dataBarChart} />
                 // <CxPieChart />
               }
             </View>
@@ -233,6 +239,7 @@ const HomeScreen = () => {
             </Text>
             {dataMostExp && (
               <FlatList
+                showsHorizontalScrollIndicator={false}
                 data={dataMostExp.slice(0, 3)}
                 renderItem={({item}) => (
                   <CardTransaction isExpenses item={item} />
@@ -241,13 +248,16 @@ const HomeScreen = () => {
               />
             )}
           </View>
-
+          {/* err */}
           {/* Transaction history  */}
           <View className="flex flex-row justify-between items-center mt-4 mb-1">
             <Text style={{color: theme.textColor}} className="font-semibold ">
               Giao dịch gần đây
             </Text>
-            <TouchableOpacity onPress={() => {navigate(t(SCREENS.TRANSACTION_HISTORY));}}>
+            <TouchableOpacity
+              onPress={() => {
+                navigate(t(SCREENS.TRANSACTION_HISTORY),);
+              }}>
               <Text className="font-semibold text-green-500">Xem báo cáo</Text>
             </TouchableOpacity>
           </View>
@@ -255,6 +265,7 @@ const HomeScreen = () => {
             style={{backgroundColor: theme.backgroundColor}}
             className="px-3 rounded-md">
             <FlatList
+              showsHorizontalScrollIndicator={false}
               data={transactionData?.data.transactions.slice(0, 4)}
               renderItem={({item}) => (
                 <CardTransaction isTransactionRecent item={item} />

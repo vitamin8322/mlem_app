@@ -34,7 +34,7 @@ const BottomTabNavigation = () => {
               <TransactionHistoryActive height={24} width={24} />
             );
             break;
-          case `${t(SCREENS.ADD_TRANSACTION)}`:
+          case t(SCREENS.ADD_TRANSACTION):
             iconName = (
               <Add height={34} width={34} />
             ) 

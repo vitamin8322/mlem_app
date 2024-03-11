@@ -55,7 +55,6 @@ const BarchartHome = (props: Props) => {
         yAxisColor={'transparent'}
         xAxisColor={theme.textColor}
         renderTooltip={(item: any, index: number) => {
-          // console.log(item);
           return (
             <View
               style={{

@@ -1,67 +1,147 @@
+import {monthTransaction} from '@services/apis/transaction.api';
+import CardTransaction from '@shared-components/CardTransaction';
 import CxPieChart from '@shared-components/CxPieChart';
+import {REACT_QUERY_KEY, formatNumberWithCommas} from '@shared-constants';
+import {useQuery} from '@tanstack/react-query';
 import {Dinner, StartApp, Test} from 'assets';
-import React from 'react';
-import {View, Text, Image} from 'react-native';
+import classNames from 'classnames';
+import React, {useCallback, useMemo, useState} from 'react';
+import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
+import {Calendar} from 'react-native-calendars';
 import Svg, {Circle, G, Line, Text as TextSvg} from 'react-native-svg';
-import {PieChart} from 'react-native-svg-charts';
+// import {PieChart} from 'react-native-svg-charts';
 const ReportScreen = () => {
-  const data = [50, 10, 40, 95, -4, -24, 85, 91];
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [isSelectExp, setIsSelectExp] = useState(true);
+  const [dataCircle, setDataCircle] = useState<any>();
 
-  const randomColor = () =>
-    ('#' + ((Math.random() * 0xffffff) << 0).toString(16) + '000000').slice(
-      0,
-      7,
-    );
+  const {isLoading: isdataMonthDataLoading, data: dataMonthData} = useQuery({
+    queryKey: [REACT_QUERY_KEY.TRANSACTION_MONTH, currentYear, currentMonth],
+    queryFn: () => monthTransaction(currentYear, currentMonth),
+    onSuccess(data) {
+      setDataCircle(data.data.data.expenses);
+    },
+  });
 
-  const pieData = data
-    .filter(value => value > 0)
-    .map((value, index) => ({
-      value,
-      svg: {fill: randomColor()},
-      key: `pie-${index}`,
-    }));
+  const onMonthChange = useCallback(
+    (date: any) => {
+      setCurrentMonth(date.month);
+      setCurrentYear(date.year);
+    },
+    [currentMonth, currentYear],
+  );
 
-  const Labels = ({slices, height, width}: any) => {
-    return slices.map((slice: any, index: any) => {
-      const {labelCentroid, pieCentroid, data} = slice;
-      
-      return (
-        <G key={index}>
-          <Line
-            x1={labelCentroid[0]}
-            y1={labelCentroid[1]}
-            x2={pieCentroid[0]}
-            y2={pieCentroid[1]}
-            stroke={data.svg.fill}
-          />
-            <TextSvg
-              x={labelCentroid[0] - 15}
-              y={labelCentroid[1] +5}>
-              12312
-            </TextSvg>
-        </G>
-      );
-    });
-  };
+  const dayComponent = useMemo(() => {
+    return () => {
+      return <View className="h-52"></View>;
+    };
+  }, [currentMonth, currentYear]);
 
   return (
-    // <PieChart
-    //   style={{height: 400, marginTop: 10}}
-    //   data={pieData}
-    //   innerRadius={50}
-    //   outerRadius={75}
-    //   labelRadius={100}
-    //   onPress={(event:any, slices:any) => {
-    //     if (slices.length > 0) {
-    //       const { index } = slices[0];
-    //       // onSlicePress(slices[0], index);
-    //       console.log(index);
-          
-    //     }
-    //   }}>
-    //   <Labels />
-    // </PieChart>
-    <CxPieChart />
+    <>
+      <Calendar
+        onMonthChange={onMonthChange}
+        // markedDates={dailyTransactionsData?.data.data.calender}
+        dayComponent={dayComponent}
+        hideDayNames
+        style={{
+          height: 50,
+          backgroundColor: 'transparent',
+        }}
+      />
+      <View className="flex flex-row justify-center items-center gap-x-2 px-3 mt-3">
+        <View className="flex flex-row justify-between items-center w-[48%] h-12 px-2 border border-gray-400 rounded-md">
+          <Text>Chi tiêu</Text>
+          <Text className="font-semibold text-red-500">
+            -
+            {formatNumberWithCommas(
+              String(dataMonthData?.data.data.total[0]?.expense || 0),
+            )}
+            đ
+          </Text>
+        </View>
+        <View className="flex flex-row justify-between items-center w-[48%] h-12 px-2 border border-gray-400 rounded-md">
+          <Text>Thu nhập</Text>
+          <Text className="font-semibold text-blue-500">
+            +
+            {formatNumberWithCommas(
+              String(dataMonthData?.data.data.total[0]?.revenue || 0),
+            )}
+            đ
+          </Text>
+        </View>
+      </View>
+      <View className="flex flex-row justify-between items-center h-12 px-2 border border-gray-400 rounded-md mx-3 mt-2">
+        <Text>Thu nhập</Text>
+        <Text className="font-semibold ">
+          {formatNumberWithCommas(
+            String(
+              Number(dataMonthData?.data.data.total[0]?.revenue || 0) -
+                Number(dataMonthData?.data.data.total[0]?.expense || 0),
+            ),
+          )}
+          đ
+        </Text>
+      </View>
+      {dataMonthData && dataCircle && (
+        <>
+          <View className="flex flex-row justify-center items-center px-3 mt-2">
+            <View
+              className={classNames('border-b-2 w-[48%] ', {
+                'border-red-400': isSelectExp,
+              })}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsSelectExp(true);
+                  setDataCircle(dataMonthData.data.data.expenses);
+                }}>
+                <Text
+                  className={classNames('text-center font-semibold', {
+                    'border-red-400': isSelectExp,
+                  })}>
+                  Chi tiêu
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <View
+              className={classNames('border-b-2 w-[48%] ', {
+                'border-red-400': !isSelectExp,
+              })}>
+              <TouchableOpacity
+                onPress={() => {
+                  setIsSelectExp(false);
+                  setDataCircle(dataMonthData.data.data.revenues);
+                }}>
+                <Text
+                  className={classNames('text-center font-semibold', {
+                    'border-red-400': !isSelectExp,
+                  })}>
+                  Thu nhập
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <CxPieChart data={dataCircle} />
+          {dataCircle.length > 0 ? (
+            <FlatList
+              showsHorizontalScrollIndicator={false}
+              data={dataCircle.sort((a: any, b: any) => {
+                return a.value - b.value;
+              })}
+              renderItem={({item}) => (
+                <CardTransaction isTransactionRecent isPercent item={item} />
+              )}
+              keyExtractor={item => item.id}
+            />
+          ) : (
+            // <Text className="text-center">Không có 11dữ liêu</Text>
+
+            <Text className="text-center">Không có dữ liệu</Text>
+          )}
+        </>
+      )}
+    </>
   );
 };
 

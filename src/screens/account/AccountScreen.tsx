@@ -13,7 +13,7 @@ const AccountScreen = (props: Props) => {
   const { setIsAuthenticated, setProfile } = useContext(AppContext);
   return (
     <>
-      <ScrollView>
+      {/* <ScrollView> */}
         <View className="p-2">
           <View className="flex justify-center items-center bg-white border border-gray-400 rounded-md h-24 mb-2">
             <Text>Tên name</Text>
@@ -34,7 +34,7 @@ const AccountScreen = (props: Props) => {
                   await asyncStorageService.removeValue('profile')
                   setIsAuthenticated(false)
                   setProfile(null)
-                  console.log(123);
+                  navigate(SCREENS.LOGIN_SCREEN)
                 }
               }}>
               <View className="flex flex-row items-center bg-white border-b border-b-gray-400 p-2 pl-4">
@@ -47,7 +47,7 @@ const AccountScreen = (props: Props) => {
           )}
           keyExtractor={item => item.id}
         />
-      </ScrollView>
+      {/* </ScrollView> */}
     </>
   );
 };

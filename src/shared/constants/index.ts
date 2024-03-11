@@ -36,11 +36,13 @@ export const SCREENS = {
   ACCOUNT_SCREEN: 'AccountScreen',
   SALE_REPORT: 'SaleReport',
   MY_WALLET_SCREEN: 'MyWallet',
+  FORM_WALLET_SCREEN: 'FORM_WALLET_SCREEN',
 
   LOGIN_SCREEN: 'LoginScreen',
   REGISTER_SCREEN: 'RegisterScreen',
   LANGUAGE_SCREEN: 'LANGUAGE_SCREEN',
-  COLOR: 'COLOR',
+
+  CHANGE_COLOR_SCREEN: 'CHANGE_COLOR_SCREEN',
   test: 'home',
 };
 
@@ -56,6 +58,7 @@ export const REACT_QUERY_KEY = {
   TRANSACTION_EXP_WEEK: 'TRANSACTION_EXP_WEEK ',
   DAILY_TRANSACTION: 'DAILY_TRANSACTION',
   TRANSACTION_EXP_MONTH: 'TRANSACTION_EXP_MONTH',
+  TRANSACTION_MONTH: 'TRANSACTION_MONTH',
 } 
 
 export const LIST_ITEM_EXPENSES = [
@@ -136,7 +139,7 @@ export const LIST_ACCOUNT_SCREEN = [
     icon: Color,
     title: 'Thay đổi màu',
     id: '02',
-    navigate: SCREENS.COLOR
+    navigate: SCREENS.CHANGE_COLOR_SCREEN
   },
   {
     icon: Logout,
@@ -156,6 +159,19 @@ export const LIST_LANGUAGE = [
     icon: Vietnam,
     title: 'Vietnam',
     id: 'vi',
+  },
+];
+
+export const LIST_COLOR = [
+  {
+    title: 'Trắng',
+    id: 'base',
+    rgb: '#fff'
+  },
+  {
+    title: 'Đen',
+    id: 'black',
+    rgb: '#000'
   },
 ];
 

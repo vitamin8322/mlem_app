@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Button,
   ScrollView,
   Text,
@@ -22,7 +23,7 @@ import {
 } from '@shared-constants';
 import {useTheme} from 'contexts/app.context';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {createTransaction} from '@services/apis/transaction.api';
+import {createTransaction, deleteTransaction} from '@services/apis/transaction.api';
 type Props = {};
 LocaleConfig.locales['fr'] = {
   monthNames: [
@@ -66,7 +67,8 @@ LocaleConfig.locales['fr'] = {
   today: "Aujourd'hui",
 };
 
-const TransactionScreen = (props: Props) => {
+const TransactionScreen = ({ navigation, route }: any) => {
+  const { params } = route;
   const {theme} = useTheme();
   const inputRef = useRef(null);
 
@@ -74,19 +76,25 @@ const TransactionScreen = (props: Props) => {
 
   const [selectTransaction, setSelectTransaction] = useState<number>(0);
   const [selectedDateModal, setSelectedDateModal] = useState<any>();
-  const [selectedDate, setSelectedDate] = useState<any>(new Date());
+  const [selectedDate, setSelectedDate] = useState<any>(String(params?.props.item.money) !== 'undefined'? new Date(params?.props.item.date) :new Date());
   const [isModalVisible, setModalVisible] = useState(false);
-  const [valueMoney, setValueMoney] = useState<string>('0');
-  const [cardActive, setCardActive] = useState(0);
+  const [valueMoney, setValueMoney] = useState<string>(String(params?.props.item.money) !== 'undefined'? String(params?.props.item.money) : '0');
   const [idCategory, setIdCategory] = useState('');
   const [note, setNote] = useState('');
-
+  
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
   const transactionMutation = useMutation({
     mutationFn: createTransaction,
   });
+  const deleteMutation = useMutation({
+    mutationFn: deleteTransaction,
+  });
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id)
+  }
 
   const handleTransaction = () => {
     if (valueMoney === '0') {
@@ -103,8 +111,9 @@ const TransactionScreen = (props: Props) => {
 
     transactionMutation.mutate(body, {
       onSuccess(response) {
-        console.log(response.data);
+        // console.log(response.data);
         setValueMoney('0');
+        setNote('')
         queryClient.invalidateQueries({
           queryKey: [REACT_QUERY_KEY.TRANSACTION],
         });
@@ -113,6 +122,18 @@ const TransactionScreen = (props: Props) => {
         });
         queryClient.invalidateQueries({
           queryKey: [REACT_QUERY_KEY.DAILY_TRANSACTION],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'isoWeek'],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'month'],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [REACT_QUERY_KEY.TRANSACTION_EXP_WEEK],
+        });
+        queryClient.invalidateQueries({
+          queryKey: [REACT_QUERY_KEY.TRANSACTION_EXP_MONTH],
         });
       },
       onError(error) {
@@ -267,6 +288,31 @@ const TransactionScreen = (props: Props) => {
               Lưu
             </Text>
           </TouchableOpacity>
+          {params  && <TouchableOpacity
+            disabled={valueMoney === '0'}
+            className={classNames('bg-slate-300 mx-4 h-10 rounded-md', {
+              'bg-red-600': valueMoney !== '0',
+            })}
+            onPress={() => {
+              Alert.alert('Xóa giao dịch này', 'Giao dịch này sẽ biến mất', [
+                {
+                  text: 'Cancel',
+                  onPress: () => console.log('Cancel Pressed'),
+                  style: 'cancel',
+                },
+                {text: 'OK', onPress: () =>handleDelete(params?.props.item._id)},
+              ]);
+            }}>
+            <Text
+              className={classNames(
+                'text-center h-10 mt-2 font-semibold text-[18px]',
+                {
+                  'text-white': valueMoney !== '0',
+                },
+              )}>
+              Xóa
+            </Text>
+          </TouchableOpacity>}
         </View>
       </View>
       <Modal

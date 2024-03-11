@@ -45,7 +45,6 @@ const LoginScreen = () => {
     loginMutation.mutate(body, {
       onSuccess(response) {
         setProfile(response.data.data);
-        console.log(response.data);
 
         // queryClient.invalidateQueries({
         //   queryKey: [REACT_QUERY_KEY.WITHDRAW_MONEY],

@@ -16,7 +16,6 @@ const LanguageScreen = (props: Props) => {
   useEffect(() => {
     const initializeLanguage = async () => {
       const lang = await asyncStorageService.getValue('lang');
-      console.log(lang);
 
       setCurrentLang(String(lang));
     };

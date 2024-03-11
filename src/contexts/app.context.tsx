@@ -87,9 +87,9 @@ export const AppProvider = ({children}: {children: React.ReactNode}) => {
 
   const a = 'base';
 
-  useEffect(() => {
-    setTheme(THEMES[a]);
-  }, []);
+  // useEffect(() => {
+  //   setTheme(THEMES[a]);
+  // }, []);
 
 
   return (

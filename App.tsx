@@ -22,6 +22,12 @@ function App(): JSX.Element {
     LogBox.ignoreLogs([
       'In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.',
     ]);
+    LogBox.ignoreLogs([
+      'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
+    ]);
+    LogBox.ignoreLogs([
+      `Possible unhandled promise rejection`,
+    ]);
     const initializeLanguage = async () => {
       const lang = await asyncStorageService.getValue('lang');
       i18n.changeLanguage(lang || 'vi');

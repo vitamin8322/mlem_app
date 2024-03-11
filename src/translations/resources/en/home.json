@@ -2,5 +2,6 @@
   "helloUser": "Hi, my name is {{name}}",
   "home": "Home",
   "transaction": "Transaction",
-  "selectLanguage": "Select Language"
+  "selectLanguage": "Select Language",
+  "changeColor": "Change Color"
 }
