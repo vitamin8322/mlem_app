@@ -4,11 +4,15 @@ import {REACT_QUERY_KEY, formatNumberWithCommas} from '@shared-constants';
 import {useQuery} from '@tanstack/react-query';
 import {Dinner} from 'assets';
 import classNames from 'classnames';
+import {useTheme} from 'contexts/app.context';
+import {color} from 'native-base/lib/typescript/theme/styled-system';
 import React, {useCallback, useMemo, useState} from 'react';
 import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 type Props = {};
 const TransactionHistoryScreen = (props: Props) => {
+  const {theme} = useTheme();
+
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
 
@@ -28,6 +32,14 @@ const TransactionHistoryScreen = (props: Props) => {
     [currentMonth, currentYear],
   );
 
+  const CustomCalendarHeader = () => {
+    return (
+      <View>
+        <Text style={{color: theme.textColor}} className='font-semibold text-[18px]' >{currentMonth}/{currentYear} </Text>
+      </View>
+    );
+  };
+
   const dayComponent = useMemo(() => {
     return ({date, state, marking}: any) => {
       return (
@@ -35,11 +47,11 @@ const TransactionHistoryScreen = (props: Props) => {
           className={classNames(
             'w-14 h-[46px] border border-gray-400 mb-[-15px]',
             {'bg-gray-400': state === 'disabled'},
-            {'bg-yellow-200': state === 'today'},
-            {'bg-white': state !== 'disabled' && state !== 'today'},
+            {'bg-pink-400': state === 'today'},
+            {[`bg-[${theme.backgroundColor}]`]: state !== 'disabled' && state !== 'today'},
           )}>
           <TouchableOpacity>
-            <Text className="ml-1 text-[12px] mb-0">{date?.day}</Text>
+            <Text style={{color: theme.textColor}} className="ml-1 text-[12px] mb-0">{date?.day}</Text>
             <Text className="text-[10px] text-blue-500 font-semibold text-right">
               {marking?.revenue !== '0' && marking?.revenue
                 ? formatNumberWithCommas(String(marking?.revenue))
@@ -57,12 +69,19 @@ const TransactionHistoryScreen = (props: Props) => {
   }, [currentMonth, currentYear]);
 
   return (
-    <View>
+    <View style={{backgroundColor: theme.backgroundColor}}>
       <View className="mb-3">
         <Calendar
           onMonthChange={onMonthChange}
           markedDates={dailyTransactionsData?.data.data.calender}
+          renderHeader={CustomCalendarHeader}
           dayComponent={dayComponent}
+          headerStyle={{
+            backgroundColor: theme.backgroundColor,
+          }}
+          style={{
+            backgroundColor: theme.backgroundColor,
+          }}
         />
       </View>
       <FlatList

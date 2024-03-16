@@ -10,14 +10,17 @@ type Props = {};
 
 const AccountScreen = (props: Props) => {
   const {theme} = useTheme();
-  const { setIsAuthenticated, setProfile } = useContext(AppContext);
+  const { setIsAuthenticated, setProfile, profile } = useContext(AppContext);
+  console.log(profile);
+
+  
   return (
-    <>
+    <View style={{backgroundColor: theme.backgroundApp }} className='h-full'>
       {/* <ScrollView> */}
-        <View className="p-2">
-          <View className="flex justify-center items-center bg-white border border-gray-400 rounded-md h-24 mb-2">
-            <Text>Tên name</Text>
-            <Text>Tên Email</Text>
+        <View style={{backgroundColor: theme.backgroundApp}}  className="p-2">
+          <View style={{backgroundColor: theme.backgroundColor}} className="flex justify-center items-center border border-gray-400 rounded-md h-24 mb-2">
+            <Text style={{color: theme.textColor}}>Tên: {profile?.name} </Text>
+            <Text style={{color: theme.textColor}}>Email: {profile?.email}</Text>
           </View>
         </View>
         <FlatList
@@ -37,9 +40,9 @@ const AccountScreen = (props: Props) => {
                   navigate(SCREENS.LOGIN_SCREEN)
                 }
               }}>
-              <View className="flex flex-row items-center bg-white border-b border-b-gray-400 p-2 pl-4">
-                {React.createElement(item.icon, {height: 20, width: 20})}
-                <Text className="ml-2 font-semibold text-[16px]">
+              <View style={{backgroundColor: theme.backgroundColor}} className="flex flex-row items-center border-b border-b-gray-400 p-2 pl-4">
+                {React.createElement(item.icon, {height: 20, width: 20, fill: theme.textColor})}
+                <Text style={{color: theme.textColor}} className="ml-2 font-semibold text-[16px]">
                   {item.title}
                 </Text>
               </View>
@@ -48,7 +51,7 @@ const AccountScreen = (props: Props) => {
           keyExtractor={item => item.id}
         />
       {/* </ScrollView> */}
-    </>
+    </View>
   );
 };
 

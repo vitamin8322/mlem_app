@@ -30,7 +30,7 @@ const HeaderLayoutBase = (props: HeaderLayoutBaseType) => {
             <ArrowLeft height={30} width={30} fill={theme.textColor}/>
         </TouchableOpacity>
       </View>
-      <Text style={{color: theme.textColor}} className={classNames('text-[18px] font-semibold')}>
+      <Text style={{color: theme.textColor}} className={classNames('text-[18px] font-semibold ml-2')}>
         {nameScreen}
       </Text>
     </View>

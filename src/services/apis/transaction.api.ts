@@ -6,8 +6,12 @@ import http from 'utils/http';
 export const createTransaction = (data: { money: number, note: string, type: string, date: string, idCategory: string, wallet: string }) => {
   return http.post<TransactionResponseApiSuccess>('/api/transaction/create', queryString.stringify(data));
 };
+
+export const editTransaction = (data: { id: string,money: number, note: string, type: string, date: string, idCategory: string, wallet: string }) => {
+  return http.post<TransactionResponseApiSuccess>('/api/transaction/edit', queryString.stringify(data));
+};
+
 export const deleteTransaction = (id?: string) => {
-  console.log(id);
   return http.post<TransactionResponseApiSuccess>(`/api/transaction/delete?id=${id}`);
 };
 

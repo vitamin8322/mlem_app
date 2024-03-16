@@ -10,7 +10,7 @@ class Http {
   private accessToken: string | null | undefined
   constructor() {
     this.instance = axios.create({
-      baseURL: 'http://10.40.11.36:8888',
+      baseURL: 'http://192.168.1.9:8888',
       timeout: 30000,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',

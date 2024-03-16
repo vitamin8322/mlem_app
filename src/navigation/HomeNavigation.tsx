@@ -16,13 +16,16 @@ const HomeNavigation = () => {
       <Stack.Screen name={SCREENS.HOME_SCREEN} component={HomeScreen} />
       <Stack.Screen name={SCREENS.MY_WALLET_SCREEN} >
         {(props) =>{
-          console.log('props', props);
-          
           return <MyWalletScreen {...props} />}}
 
         </Stack.Screen>
       <Stack.Screen name={SCREENS.TRANSACTION_HISTORY} component={TransactionHistoryScreen} />
-      <Stack.Screen name={SCREENS.FORM_WALLET_SCREEN} component={FormWalletScreen} />
+      {/* <Stack.Screen name={SCREENS.FORM_WALLET_SCREEN} component={FormWalletScreen} /> */}
+      <Stack.Screen name={SCREENS.FORM_WALLET_SCREEN} >
+        {(props) =>{
+          return <FormWalletScreen {...props} />}}
+
+        </Stack.Screen>
         
     </Stack.Navigator>
   )

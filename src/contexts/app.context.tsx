@@ -28,7 +28,7 @@ export const THEMES: {[key: string]: Theme} = {
     lightColor: 'white',
     textColor: 'black',
     textColorBland: '#6b7280',
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
     backgroundApp: '#e5e7eb',
   },
   black: {

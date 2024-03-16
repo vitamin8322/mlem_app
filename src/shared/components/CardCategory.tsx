@@ -17,7 +17,7 @@ const CardCategory = (props: Props) => {
   const { theme } = useTheme();
   const {idCategory, setIdCategory, index, icon, item} = props;
   const handlePress = () => {
-    setIdCategory(item.id); // Set the active card when pressed
+    setIdCategory(item.id); 
   };
   const title = 'Dinner'
   return (
@@ -33,9 +33,9 @@ const CardCategory = (props: Props) => {
       {/* <Medical fill={'red'} height={30} width={30} /> */}
         
       </View>}
-      <Text style={{color: theme.textColor}} className="text-[12px]" numberOfLines={1}>
-        {item?.title}
-      </Text>
+      {item.title && <Text style={{color: theme.textColor}} className="text-[12px]" numberOfLines={1}>
+        {item.title}
+      </Text>}
     </TouchableOpacity>
   );
 };

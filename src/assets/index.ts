@@ -30,6 +30,9 @@ import ArrowLeft from './images/category/ArrowLeft.svg'
 import WouldInternet from './images/category/WouldInternet.svg'
 import Option from './images/category/Option.svg'
 import Check from './images/category/Check.svg'
+import Card1 from './images/category/Card1.svg'
+import Card2 from './images/category/Card2.svg'
+import Card3 from './images/category/Card3.svg'
 import Test from './images/test.png'
 import Language from './images/account/Language.svg'
 import Color from './images/account/Color.svg'
@@ -46,6 +49,6 @@ export {
     Wallet, Pig, Gift, Invest,
     ArrowLeft, WouldInternet, Option, Language,
     Color,
-    English, Vietnam, Logout
-
+    English, Vietnam, Logout,
+    Card1, Card2, Card3
 }

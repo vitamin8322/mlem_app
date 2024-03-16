@@ -4,6 +4,7 @@ import {
   formatNumberWithCommas,
 } from '@shared-constants';
 import {Dinner} from 'assets';
+import { useTheme } from 'contexts/app.context';
 import moment from 'moment';
 import React from 'react';
 import {FlatList, ScrollView, Text, View} from 'react-native';
@@ -14,10 +15,12 @@ type Props = {
 };
 
 const DayTransaction = (props: Props) => {
+  const {theme} = useTheme();
+  
   const {dataDay, extraData} = props;
   let itemDay = extraData[moment(dataDay[0].date).format('YYYY-MM-DD')];
   return (
-    <View className="w-full">
+    <View style={{backgroundColor: theme.backgroundColor}} className="w-full">
       <View className="flex flex-row justify-between items-center px-3 bg-gray-400">
         <Text className="text-white">
           {moment(dataDay[0].date).format('DD/MM/YYYY (dd)')}
@@ -37,7 +40,7 @@ const DayTransaction = (props: Props) => {
           });
           
           return (
-            <View className="py-1 px-2">
+            <View style={{backgroundColor: theme.backgroundColor}}  className="py-1 px-2 ">
               {expItems.map((filteredItem, index) => (
                 <View
                   key={index}
@@ -49,6 +52,7 @@ const DayTransaction = (props: Props) => {
                       fill: 'blue',
                     })}
                     <Text
+                      style={{color: theme.textColor}}
                       className="ml-3 text-[16px] font-semibold"
                       numberOfLines={1}>
                       {filteredItem.title}
@@ -70,6 +74,7 @@ const DayTransaction = (props: Props) => {
                       fill: 'blue',
                     })}
                     <Text
+                      style={{color: theme.textColor}}
                       className="ml-3 text-[16px] font-semibold"
                       numberOfLines={1}>
                       {filteredItem.title}

@@ -1,25 +1,27 @@
-import { getUserInfo } from '@services/apis/auth.api';
+import {getUserInfo} from '@services/apis/auth.api';
 import {
   percentTransaction,
   transactionExpMonth,
   transactionExpWeek,
   transactionType,
 } from '@services/apis/transaction.api';
+import {getAllWalletUser} from '@services/apis/wallet.api';
 import BarchartHome from '@shared-components/BarchartHome';
 import CardTransaction from '@shared-components/CardTransaction';
 import {
+  LIST_WALLET,
   REACT_QUERY_KEY,
   SCREENS,
   formatNumberWithCommas,
 } from '@shared-constants';
-import { useQuery } from '@tanstack/react-query';
-import { Eye, EyeClose } from 'assets';
+import {useQuery} from '@tanstack/react-query';
+import {Eye, EyeClose} from 'assets';
 import classNames from 'classnames';
-import { AppContext, useTheme } from 'contexts/app.context';
-import React, { useContext, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { FlatList, ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { navigate } from 'react-navigation-helpers';
+import {AppContext, useTheme} from 'contexts/app.context';
+import React, {useContext, useState} from 'react';
+import {useTranslation} from 'react-i18next';
+import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {navigate} from 'react-navigation-helpers';
 
 const HomeScreen = () => {
   const {t} = useTranslation('home');
@@ -30,6 +32,7 @@ const HomeScreen = () => {
   const [selectViewReport, setSelectViewReport] = useState(0);
   const [dataMostExp, setDataMostExp] = useState();
   const [dataBarChart, setDataBarChart] = useState();
+  const [totalWallet, setTotalWallet] = useState(0);
 
   const {data: dateUserInfo} = useQuery({
     queryKey: [REACT_QUERY_KEY.USER_INFO],
@@ -46,6 +49,20 @@ const HomeScreen = () => {
       queryFn: () => transactionType(''),
     },
   );
+
+  const {isLoading: isWalletUserDataLoading, data: walletUserData} = useQuery({
+    queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
+    queryFn: () => getAllWalletUser(),
+    onSuccess(response) {
+      const totalMoney = response.data.data.reduce(
+        (accumulator: any, currentValue: any) =>
+          accumulator + currentValue.money,
+        0,
+      );
+      console.log(totalMoney);
+      setTotalWallet(totalMoney);
+    },
+  });
 
   const {
     isLoading: ispercentTransactionDataLoading,
@@ -99,7 +116,9 @@ const HomeScreen = () => {
             <Text
               style={{color: theme.textColor}}
               className="text-[24px] font-semibold mr-2">
-              {isEyeClose ? '********' : '10,000,000'}
+              {isEyeClose
+                ? '********'
+                : formatNumberWithCommas(String(totalWallet))}
             </Text>
             <TouchableOpacity
               onPress={() => {
@@ -131,19 +150,32 @@ const HomeScreen = () => {
               </TouchableOpacity>
             </View>
             <View className="border-b border-gray-300 mx-1 text-center"></View>
-            <View className="flex flex-row justify-between items-center">
-              <View className="flex flex-row items-center my-2">
-                <EyeClose height={30} width={30} fill={`${theme.textColor}`} />
-                <Text className={`ml-1 font-semibold text-${theme.textColor}`}>
-                  Tiền mặt
-                </Text>
+            {walletUserData && (
+              <View>
+                {walletUserData.data.data.map(wallet => {
+                  if (wallet.isDefault === true) {
+                    return (
+                      <View className="flex flex-row justify-between items-center">
+                        <View className="flex flex-row items-center my-2">
+                          {LIST_WALLET.find(
+                            wallet1 => wallet1.id === wallet.idWallet,
+                          )?.icon({height: 30, width: 30})}
+                          <Text
+                            className={`ml-1 font-semibold text-${theme.textColor}`}>
+                            {wallet.name}
+                          </Text>
+                        </View>
+                        <Text
+                          className={`ml-1 font-semibold text-[18px] text-${theme.textColor}`}>
+                          {formatNumberWithCommas(String(wallet.money))}
+                        </Text>
+                      </View>
+                    );
+                  }
+                  return null;
+                })}
               </View>
-              <Text
-                className={`ml-1 font-semibold text-[18px] text-${theme.textColor}`}>
-                10,000,000
-              </Text>
-            </View>
-            <View></View>
+            )}
           </View>
 
           {/* expense report */}
@@ -256,7 +288,7 @@ const HomeScreen = () => {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                navigate(t(SCREENS.TRANSACTION_HISTORY),);
+                navigate(t(SCREENS.TRANSACTION_HISTORY));
               }}>
               <Text className="font-semibold text-green-500">Xem báo cáo</Text>
             </TouchableOpacity>
@@ -266,9 +298,9 @@ const HomeScreen = () => {
             className="px-3 rounded-md">
             <FlatList
               showsHorizontalScrollIndicator={false}
-              data={transactionData?.data.transactions.slice(0, 4)}
+              data={transactionData?.data?.transactions.slice(0, 4)}
               renderItem={({item}) => (
-                <CardTransaction isTransactionRecent item={item} />
+                <CardTransaction isTransactionRecent item={item} isNavigate />
               )}
               keyExtractor={item => item.id}
             />

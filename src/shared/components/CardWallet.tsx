@@ -1,5 +1,6 @@
+import { LIST_WALLET, SCREENS, formatNumberWithCommas } from '@shared-constants';
 import {Option, WouldInternet} from 'assets';
-import { useTheme } from 'contexts/app.context';
+import {useTheme} from 'contexts/app.context';
 import React from 'react';
 import {Text, View} from 'react-native';
 import {
@@ -8,27 +9,48 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import { navigate } from 'react-navigation-helpers';
+import {Wallet} from 'types/wallet.type';
 
 type Props = {
-  name: string;
-  value: string | number
-  icon: any
+  name?: string;
+  money?: string | number;
+  icon?: any;
+  item?: Wallet;
 };
 
 const CardWallet = (props: Props) => {
-  const { theme } = useTheme();
-  const {name, value, icon} = props
+  const {theme} = useTheme();
+  const {name, money, icon, item} = props;
 
-  function alert(arg0: string): any {
+  function alert(arg0: string): any {}
+  console.log(item);
+  
+  const handleNavigateEdit = () => {
+    navigate(SCREENS.FORM_WALLET_SCREEN,{
+      money:item?.money,
+      idWallet:item?.idWallet,
+      name:item?.name,
+      id: item?._id
+    });
   }
-
+  
+  let asd =  LIST_WALLET.find(wallet => wallet.id === item?.idWallet)?.icon || icon
   return (
-    <View style={{backgroundColor: theme.backgroundColor}} className="flex flex-row justify-between items-center h-14 bg-white mt-1 px-3">
+    <View
+      style={{backgroundColor: theme.backgroundColor}}
+      className="flex flex-row justify-between items-center h-14 bg-white mt-1 px-3">
       <View className="flex flex-row items-center gap-x-2 ">
-      { React.createElement(icon,  { height: 40, width: 40 })}
+        {asd && React.createElement(asd, {height: 40, width: 40})}
         <View>
-          <Text style={{color: theme.textColor}} className="text-[16px]">{name}</Text>
-          <Text style={{color: theme.textColorBland}} className="text-[14px] text-gray-500">{value} đ</Text>
+          <Text style={{color: theme.textColor}} className="text-[16px]">
+            {item?.name || name}
+          </Text>
+          <Text
+            style={{color: theme.textColorBland}}
+            className="text-[14px] text-gray-500">
+            {formatNumberWithCommas(String( (money) || item?.money))}đ
+          </Text>
         </View>
       </View>
       <Menu>
@@ -36,16 +58,15 @@ const CardWallet = (props: Props) => {
           <Option height={20} width={20} fill={theme.textColor} />
         </MenuTrigger>
         <MenuOptions>
-          <MenuOption onSelect={() => alert(`Save`)} text="Sửa" />
-          <MenuOption onSelect={() => alert(`Save`)} text="Chuyển tiền đến ví khác" />
+          <MenuOption onSelect={() => handleNavigateEdit()} text="Sửa" />
+          <MenuOption
+            onSelect={() => console.log(123)
+            }
+            text="Chuyển tiền đến ví khác"
+          />
           <MenuOption onSelect={() => alert(`Delete`)}>
             <Text style={{color: 'red'}}>Xóa</Text>
           </MenuOption>
-          <MenuOption
-            onSelect={() => alert(`Not called`)}
-            disabled={true}
-            text="Disabled"
-          />
         </MenuOptions>
       </Menu>
     </View>

@@ -17,6 +17,7 @@ type Props = {
   isTransactionHistory?: boolean;
   item: any;
   isPercent?: boolean;
+  isNavigate?: boolean
 };
 
 const CardTransaction = (props: Props) => {
@@ -28,19 +29,18 @@ const CardTransaction = (props: Props) => {
     isTransactionHistory,
     item,
     isPercent,
+    isNavigate
   } = props;
 
   return (
     <TouchableOpacity
       onPress={() => {
-        push(`${t(SCREENS.ADD_TRANSACTION)}`, {
-          props,
-        });
-        navigate(`${t(SCREENS.ADD_TRANSACTION)}`);
-
-        // navigate(SCREENS.MY_WALLET_SCREEN,{
-        //   asdasd:'asd'
-        // });
+        if (isNavigate) {
+          push(`${t(SCREENS.ADD_TRANSACTION)}`, {
+            props,
+          });
+          navigate(`${t(SCREENS.ADD_TRANSACTION)}`);
+        }
       }}>
       <View className="flex flex-row justify-between items-center px-2 py-2">
         {LIST_ITEM_REVENUE.filter(itemRevenue => {

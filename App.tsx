@@ -28,6 +28,9 @@ function App(): JSX.Element {
     LogBox.ignoreLogs([
       `Possible unhandled promise rejection`,
     ]);
+    LogBox.ignoreLogs([
+      "Warning: This synthetic event is reused for performance reasons. If you're seeing this, you're accessing the property `nativeEvent` on a released/nullified synthetic event. This is set to null. If you must keep the original synthetic event around, use event.persist(). See https://reactjs.org/link/event-pooling for more information.",
+    ]);
     const initializeLanguage = async () => {
       const lang = await asyncStorageService.getValue('lang');
       i18n.changeLanguage(lang || 'vi');

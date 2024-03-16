@@ -14,16 +14,26 @@ import {Calendar, LocaleConfig} from 'react-native-calendars';
 import moment from 'moment';
 import 'moment/locale/vi';
 import Modal from 'react-native-modal/dist/modal';
-import {Dinner} from 'assets';
+import {Card1, Check, Dinner} from 'assets';
 import CardCategory from '@shared-components/CardCategory';
 import {
   LIST_ITEM_EXPENSES,
   LIST_ITEM_REVENUE,
+  LIST_WALLET,
   REACT_QUERY_KEY,
 } from '@shared-constants';
 import {useTheme} from 'contexts/app.context';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {createTransaction, deleteTransaction} from '@services/apis/transaction.api';
+import {MutateOptions, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {
+  createTransaction,
+  deleteTransaction,
+  editTransaction,
+} from '@services/apis/transaction.api';
+import {getAllWalletUser} from '@services/apis/wallet.api';
+import SelectWallet from '@shared-components/SelectWallet';
+import {Modalize} from 'react-native-modalize';
+import {Wallet} from 'types/wallet.type';
+import { TransactionResponseApiSuccess } from 'types/transaction.type';
 type Props = {};
 LocaleConfig.locales['fr'] = {
   monthNames: [
@@ -67,53 +77,75 @@ LocaleConfig.locales['fr'] = {
   today: "Aujourd'hui",
 };
 
-const TransactionScreen = ({ navigation, route }: any) => {
-  const { params } = route;
+const TransactionScreen = ({navigation, route}: any) => {
+  const {params} = route;
   const {theme} = useTheme();
+  const modalizeRef = useRef<Modalize>(null);
   const inputRef = useRef(null);
 
   const queryClient = useQueryClient();
-
-  const [selectTransaction, setSelectTransaction] = useState<number>(0);
-  const [selectedDateModal, setSelectedDateModal] = useState<any>();
-  const [selectedDate, setSelectedDate] = useState<any>(String(params?.props.item.money) !== 'undefined'? new Date(params?.props.item.date) :new Date());
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [valueMoney, setValueMoney] = useState<string>(String(params?.props.item.money) !== 'undefined'? String(params?.props.item.money) : '0');
-  const [idCategory, setIdCategory] = useState('');
-  const [note, setNote] = useState('');
   
+  const [selectTransaction, setSelectTransaction] = useState<number>(params?.props.item.type==='rev' ?1 :0);
+  const [selectedDateModal, setSelectedDateModal] = useState<any>();
+  const [selectedDate, setSelectedDate] = useState<any>(
+    String(params?.props.item.money) !== 'undefined'
+      ? new Date(params?.props.item.date)
+      : new Date(),
+  );
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [valueMoney, setValueMoney] = useState<string>(
+    String(params?.props.item.money) !== 'undefined'
+      ? String(params?.props.item.money)
+      : '0',
+  );
+  const [idCategory, setIdCategory] = useState(
+    String(params?.props.item.idCategory) !== 'undefined'
+      ? String(params?.props.item.idCategory)
+      : 'exp01',
+  );
+
+  const [note, setNote] = useState(
+    String(params?.props.item.note) !== 'undefined'
+      ? String(params?.props.item.note)
+      : '',
+  );
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
+
+  const {isLoading: isWalletUserDataLoading, data: walletUserData} =
+    useQuery({
+      queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
+      queryFn: () => getAllWalletUser(),
+      onSuccess(response) {},
+    });
+
+  const [idWallet, setIdWallet] = useState<Wallet>(() => {
+    return walletUserData?.data.data.find((wallet: Wallet) => {
+      if (params) {
+        return wallet._id === params.props.item.wallet;
+      } else {
+        return wallet.isDefault === true;
+      }
+    });
+  });
+
   const transactionMutation = useMutation({
     mutationFn: createTransaction,
+  });
+  const editTransactionMutation = useMutation({
+    mutationFn: editTransaction,
   });
   const deleteMutation = useMutation({
     mutationFn: deleteTransaction,
   });
 
   const handleDelete = (id: string) => {
-    deleteMutation.mutate(id)
-  }
-
-  const handleTransaction = () => {
-    if (valueMoney === '0') {
-      return;
-    }
-    const body = {
-      money: Number(valueMoney),
-      note: note,
-      type: selectTransaction === 0 ? 'exp' : 'rev',
-      date: selectedDate,
-      idCategory: idCategory,
-      wallet: '65cdde71b2d1e4c3c205eeab',
-    };
-
-    transactionMutation.mutate(body, {
+    deleteMutation.mutate(id, {
       onSuccess(response) {
-        // console.log(response.data);
         setValueMoney('0');
-        setNote('')
+        setNote('');
         queryClient.invalidateQueries({
           queryKey: [REACT_QUERY_KEY.TRANSACTION],
         });
@@ -136,10 +168,59 @@ const TransactionScreen = ({ navigation, route }: any) => {
           queryKey: [REACT_QUERY_KEY.TRANSACTION_EXP_MONTH],
         });
       },
-      onError(error) {
-        console.log(error);
-      },
     });
+  };
+
+  const handleTransaction = () => {
+    if (valueMoney === '0' && idWallet === undefined) {
+        return;
+    }
+
+    const body = {
+        money: Number(valueMoney),
+        note: note,
+        type: selectTransaction === 0 ? 'exp' : 'rev',
+        date: selectedDate,
+        idCategory: idCategory,
+        wallet: idWallet && idWallet._id,
+        ...(params && { id: params.props.item._id })
+    };
+
+    const invalidateQueries = () => {
+        [
+            REACT_QUERY_KEY.TRANSACTION,
+            REACT_QUERY_KEY.PERCENT_TRANSACTION,
+            REACT_QUERY_KEY.DAILY_TRANSACTION,
+            [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'isoWeek'],
+            [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'month'],
+            REACT_QUERY_KEY.TRANSACTION_EXP_WEEK,
+            REACT_QUERY_KEY.TRANSACTION_EXP_MONTH,
+            REACT_QUERY_KEY.ALL_WALLET_USER,
+        ].forEach(queryKey => {
+            queryClient.invalidateQueries({ queryKey });
+        });
+    };
+
+    const mutationOptions: MutateOptions<TransactionResponseApiSuccess, any, {id?:string, money: number; note: string; type: string; date: string; idCategory: string; wallet: string; }, unknown> = {
+        onSuccess: (response: any) => {
+            console.log(params ? 'edit' : 'add');
+            setValueMoney('0');
+            setNote('');
+            invalidateQueries();
+        },
+        onError: (error: any) => {
+            console.log(error);
+        },
+    };
+
+    const mutationFunction = params ? editTransactionMutation : transactionMutation;
+
+    mutationFunction.mutate(body, mutationOptions);
+};
+
+
+  const onOpenModalize = () => {
+    modalizeRef.current?.open();
   };
 
   return (
@@ -240,7 +321,32 @@ const TransactionScreen = ({ navigation, route }: any) => {
               />
             </View>
           </View>
-          <View className=" h-[350px]">
+          <View className="flex flex-row justify-center items-center ">
+            <View className="w-3/12">
+              <Text style={{color: theme.textColor}}>Ví</Text>
+            </View>
+            <View className="w-9/12 h-12">
+              <TouchableOpacity onPress={onOpenModalize}>
+                <View className=" flex flex-row justify-start items-center mt-1">
+                  {idWallet &&
+                    LIST_WALLET.find(
+                      wallet => wallet.id === idWallet?.idWallet,
+                    )?.icon({height: 30, width: 30})}
+                  {idWallet && (
+                    <Text className="ml-3 font-semibold text-[16px]">
+                      {idWallet?.name}
+                    </Text>
+                  )}
+                  {!idWallet && (
+                    <Text className="font-semibold text-[16px] mt-2">
+                      Ví đã bị xóa
+                    </Text>
+                  )}
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View className=" h-[300px]">
             <Text style={{color: theme.textColor}} className="">
               Danh mục:
             </Text>
@@ -288,32 +394,70 @@ const TransactionScreen = ({ navigation, route }: any) => {
               Lưu
             </Text>
           </TouchableOpacity>
-          {params  && <TouchableOpacity
-            disabled={valueMoney === '0'}
-            className={classNames('bg-slate-300 mx-4 h-10 rounded-md', {
-              'bg-red-600': valueMoney !== '0',
-            })}
-            onPress={() => {
-              Alert.alert('Xóa giao dịch này', 'Giao dịch này sẽ biến mất', [
-                {
-                  text: 'Cancel',
-                  onPress: () => console.log('Cancel Pressed'),
-                  style: 'cancel',
-                },
-                {text: 'OK', onPress: () =>handleDelete(params?.props.item._id)},
-              ]);
-            }}>
-            <Text
-              className={classNames(
-                'text-center h-10 mt-2 font-semibold text-[18px]',
-                {
-                  'text-white': valueMoney !== '0',
-                },
-              )}>
-              Xóa
-            </Text>
-          </TouchableOpacity>}
+          {params && (
+            <TouchableOpacity
+              disabled={valueMoney === '0'}
+              className={classNames('bg-slate-300 mx-4 h-10 rounded-md', {
+                'bg-red-600': valueMoney !== '0',
+              })}
+              onPress={() => {
+                Alert.alert('Xóa giao dịch này', 'Giao dịch này sẽ biến mất', [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {
+                    text: 'OK',
+                    onPress: () => handleDelete(params?.props.item._id),
+                  },
+                ]);
+              }}>
+              <Text
+                className={classNames(
+                  'text-center h-10 mt-2 font-semibold text-[18px]',
+                  {
+                    'text-white': valueMoney !== '0',
+                  },
+                )}>
+                Xóa
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
+
+        <Modalize
+          ref={modalizeRef}
+          handlePosition={'inside'}
+          modalTopOffset={400}>
+          <ScrollView nestedScrollEnabled={true}>
+            {walletUserData?.data.data.map((item: Wallet) => {
+              const icon = LIST_WALLET.find(
+                wallet => wallet.id === item?.idWallet,
+              )?.icon;
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    setIdWallet(item);
+                  }}>
+                  <View className="flex flex-row justify-between items-item px-3 mt-3 border-b">
+                    <View className="flex flex-row justify-start items-item gap-x-3">
+                      {icon &&
+                        React.createElement(icon, {height: 40, width: 40})}
+                      <Text className="mt-2">{item?.name}</Text>
+                    </View>
+                    <View>
+                      {idWallet?._id === item?._id && (
+                        <Check height={35} width={35} />
+                      )}
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+          <View className="p-3"></View>
+        </Modalize>
       </View>
       <Modal
         isVisible={isModalVisible}
