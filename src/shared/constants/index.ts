@@ -135,19 +135,19 @@ export const LIST_ITEM_REVENUE = [
 export const LIST_ACCOUNT_SCREEN = [
   {
     icon: Language,
-    title: 'Thay đổi ngôn ngữ',
+    title: 'language',
     id: '01',
     navigate: SCREENS.LANGUAGE_SCREEN
   },
   {
     icon: Color,
-    title: 'Thay đổi màu',
+    title: 'theme',
     id: '02',
     navigate: SCREENS.CHANGE_COLOR_SCREEN
   },
   {
     icon: Logout,
-    title: 'Đăng xuất',
+    title: 'logout',
     id: '03',
     navigate: null
   },

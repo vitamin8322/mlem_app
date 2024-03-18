@@ -9,11 +9,13 @@ import { navigate } from 'react-navigation-helpers';
 import { REACT_QUERY_KEY, SCREENS } from '@shared-constants';
 import { useQuery } from '@tanstack/react-query';
 import { getAllWalletUser } from '@services/apis/wallet.api';
+import { useTranslation } from 'react-i18next';
 
 type Props = {};
 
 const MyWalletScreen = ({ navigation, route }: any) => {
   const { params } = route;
+  const {t} = useTranslation('home');
   
   const {theme} = useTheme();
   const [checkIsBack, setCheckIsBack] = useState<boolean>(false);
@@ -28,24 +30,22 @@ const MyWalletScreen = ({ navigation, route }: any) => {
     queryFn: () => getAllWalletUser(),
     onSuccess(response) {
       const totalMoney = response.data.data.reduce((accumulator: any, currentValue: any) => accumulator + currentValue.money, 0);
-      console.log(totalMoney);
       setTotalWallet(totalMoney)
     },
   });
 
-
   return (
     <LayoutBase
-      name="Ví của bạn"
+      name={t("myWallet")}
       isBack
       setCheckIsBack={setCheckIsBack}
       checkIsBack={checkIsBack}>
       <ScrollView>
-        <CardWallet name="Tổng cộng" money={totalWallet} icon={WouldInternet} />
+        <CardWallet name={String(t("total"))} money={totalWallet} icon={WouldInternet} />
         <Text
           style={{color: theme.textColorBland}}
           className="px-3 font-semibold mt-2">
-          Danh sách các ví
+          {t("includedTotal")}
         </Text>
         {/* <CardWallet name="Tổng cộng" money="8,000,000" icon={WouldInternet} /> */}
             {walletUserMonthData?.data.data && (

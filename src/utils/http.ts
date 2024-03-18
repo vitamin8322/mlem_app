@@ -11,6 +11,7 @@ class Http {
   constructor() {
     this.instance = axios.create({
       baseURL: 'http://192.168.1.9:8888',
+      // baseURL: 'https://backend-wonwon.onrender.com',
       timeout: 30000,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',

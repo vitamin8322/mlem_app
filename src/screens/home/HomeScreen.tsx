@@ -110,7 +110,7 @@ const HomeScreen = () => {
       </Text> */}
         <View>
           <Text className={`text-[18px] text-${theme.textColor}`}>
-            Tổng số dư
+            {t("total", {name:'Doanh'})}
           </Text>
           <View className="flex flex-row items-center mb-5">
             <Text
@@ -138,14 +138,14 @@ const HomeScreen = () => {
             <View className="flex flex-row justify-between items-center h-10 ">
               <Text
                 className={`font-semibold text-[16px] text-${theme.textColor}`}>
-                Ví của tôi
+                {t("myWallet")}
               </Text>
               <TouchableOpacity
                 onPress={() => {
                   navigate(SCREENS.MY_WALLET_SCREEN);
                 }}>
                 <Text className="text-green-500 font-semibold text-[16px]">
-                  Xem tất cả
+                {t("viewAll")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -181,13 +181,13 @@ const HomeScreen = () => {
           {/* expense report */}
           <View className="flex flex-row justify-between items-center mt-4 mb-1">
             <Text style={{color: theme.textColor}} className="font-semibold ">
-              Báo cáo chi tiêu
+                {t("viewReport")}
             </Text>
             <TouchableOpacity
               onPress={() => {
                 navigate(SCREENS.LOGIN_SCREEN);
               }}>
-              <Text className="font-semibold text-green-500">Xem báo cáo</Text>
+              <Text className="font-semibold text-green-500">{t("viewAll")}</Text>
             </TouchableOpacity>
           </View>
           <View
@@ -213,7 +213,7 @@ const HomeScreen = () => {
                   <Text
                     style={{color: theme.textColor}}
                     className="text-center">
-                    Tuần
+                    {t("week")}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -236,7 +236,7 @@ const HomeScreen = () => {
                   <Text
                     style={{color: theme.textColor}}
                     className="text-center">
-                    Tháng
+                    {t("month")}
                   </Text>
                 </View>
               </TouchableOpacity>
@@ -253,9 +253,13 @@ const HomeScreen = () => {
                   )}đ`}
             </Text>
             <View>
-              <Text style={{color: theme.textColorBland}}>{`Tổng chi ${
+              <Text style={{color: theme.textColorBland}}>
+                {/* {`Tổng chi ${
                 selectViewReport === 0 ? 'tuần' : 'tháng'
-              } này`}</Text>
+              } này`} */}
+                    {t("totalWeekMonth", {name: selectViewReport === 0 ? t("week").toLowerCase() : t("month").toLowerCase()})}
+              
+              </Text>
             </View>
 
             <View className="ml-3 my-2">
@@ -267,7 +271,7 @@ const HomeScreen = () => {
             <Text
               style={{color: theme.textColorBland}}
               className="text-[16px] font-semibold">
-              Chi tiêu nhiều nhất
+              {t("topSpending")}
             </Text>
             {dataMostExp && (
               <FlatList
@@ -284,13 +288,13 @@ const HomeScreen = () => {
           {/* Transaction history  */}
           <View className="flex flex-row justify-between items-center mt-4 mb-1">
             <Text style={{color: theme.textColor}} className="font-semibold ">
-              Giao dịch gần đây
+            {t("recentTransaction")}
             </Text>
             <TouchableOpacity
               onPress={() => {
                 navigate(t(SCREENS.TRANSACTION_HISTORY));
               }}>
-              <Text className="font-semibold text-green-500">Xem báo cáo</Text>
+              <Text className="font-semibold text-green-500">{t("viewAll")}</Text>
             </TouchableOpacity>
           </View>
           <View

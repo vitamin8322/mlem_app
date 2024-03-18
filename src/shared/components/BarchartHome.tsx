@@ -2,6 +2,7 @@ import {formatNumberWithCommas} from '@shared-constants';
 import { useTheme } from 'contexts/app.context';
 import moment from 'moment';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {Text, View} from 'react-native';
 import {BarChart} from 'react-native-gifted-charts';
 
@@ -11,19 +12,20 @@ type Props = {
 
 const BarchartHome = (props: Props) => {
   const {theme} = useTheme();
+  const {t} = useTranslation('home');
   
   const {data} = props;
   
   const barData = [
     {
       value: data[data.length - 2].totalMoney,
-      label: 'Tháng trước',
+      label: t("lastMonth"),
       frontColor: '#4ABFF4',
       labelTextStyle: {color: theme.textColor},
     },
     {
       value: data[data.length -1 ].totalMoney,
-      label: 'Tháng này',
+      label: t("thisMonth"),
       frontColor: '#79C3DB',
       labelTextStyle: {color: theme.textColor},
     },

@@ -6,6 +6,7 @@ import {Dinner} from 'assets';
 import classNames from 'classnames';
 import {useTheme} from 'contexts/app.context';
 import React, {useRef, useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Modalize} from 'react-native-modalize';
 import { navigate } from 'react-navigation-helpers';
@@ -16,6 +17,7 @@ type Props = {};
 const FormWalletScreen = ({navigation, route}: any) => {
   const {params} = route;
   const {theme} = useTheme();
+  const {t} = useTranslation('home');
   const queryClient = useQueryClient();
 
   const modalizeRef = useRef<Modalize>(null);
@@ -75,14 +77,14 @@ const FormWalletScreen = ({navigation, route}: any) => {
 
   return (
     <LayoutBase
-      name={`${!params ? 'Thêm ví' : 'Sửa ví'}`}
+      name={`${!params ? t("addWallet") : t("editWallet")}`}
       isBack
       setCheckIsBack={setCheckIsBack}
       checkIsBack={checkIsBack}>
       <View className="flex justify-center items-center gap-y-2 px-3 mt-2">
         <View className="flex flex-row justify-center items-center ">
           <View className="w-3/12">
-            <Text style={{color: theme.textColor}}>Tên ví</Text>
+            <Text style={{color: theme.textColor}}>{t("name")}</Text>
           </View>
           <View className="w-9/12">
             <TextInput
@@ -97,7 +99,7 @@ const FormWalletScreen = ({navigation, route}: any) => {
         </View>
         <View className="flex flex-row justify-center items-center">
           <View className="w-3/12">
-            <Text style={{color: theme.textColor}}>Tiền</Text>
+            <Text style={{color: theme.textColor}}>{t("money")}</Text>
           </View>
           <View className="w-9/12">
             <TextInput
@@ -121,7 +123,7 @@ const FormWalletScreen = ({navigation, route}: any) => {
         </View>
         <View className="flex justify-start items-start w-full">
           <View>
-            <Text style={{color: theme.textColor}}>Biểu tượng</Text>
+            <Text style={{color: theme.textColor}}>{t("category")}</Text>
           </View>
           <View className="flex flex-row items-center gap-2 flex-wrap px-2 mt-1">
             {LIST_WALLET.map((item, index) => {
@@ -151,7 +153,7 @@ const FormWalletScreen = ({navigation, route}: any) => {
               'text-white': valueMoney !== '0',
             },
           )}>
-          Lưu
+          {t("save")}
         </Text>
       </TouchableOpacity>
     </LayoutBase>

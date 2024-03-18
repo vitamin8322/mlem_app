@@ -2,6 +2,7 @@ import { LIST_WALLET, SCREENS, formatNumberWithCommas } from '@shared-constants'
 import {Option, WouldInternet} from 'assets';
 import {useTheme} from 'contexts/app.context';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {Text, View} from 'react-native';
 import {
   Menu,
@@ -22,6 +23,7 @@ type Props = {
 const CardWallet = (props: Props) => {
   const {theme} = useTheme();
   const {name, money, icon, item} = props;
+  const {t} = useTranslation('home');
 
   function alert(arg0: string): any {}
   console.log(item);
@@ -58,14 +60,14 @@ const CardWallet = (props: Props) => {
           <Option height={20} width={20} fill={theme.textColor} />
         </MenuTrigger>
         <MenuOptions>
-          <MenuOption onSelect={() => handleNavigateEdit()} text="Sửa" />
+          <MenuOption onSelect={() => handleNavigateEdit()} text={String(t("edit"))} />
           <MenuOption
             onSelect={() => console.log(123)
             }
-            text="Chuyển tiền đến ví khác"
+            text={String(t("transferWallet"))}
           />
           <MenuOption onSelect={() => alert(`Delete`)}>
-            <Text style={{color: 'red'}}>Xóa</Text>
+            <Text style={{color: 'red'}}>{t("delete")}</Text>
           </MenuOption>
         </MenuOptions>
       </Menu>

@@ -6,10 +6,13 @@ import {AppContext, useTheme} from 'contexts/app.context';
 import {LIST_ACCOUNT_SCREEN, SCREENS} from '@shared-constants';
 import {navigate} from 'react-navigation-helpers';
 import { asyncStorageService } from 'utils/storage';
+import { useTranslation } from 'react-i18next';
 type Props = {};
 
 const AccountScreen = (props: Props) => {
-  const {theme} = useTheme();
+  const {theme} = useTheme();  
+  const {t} = useTranslation('home');
+
   const { setIsAuthenticated, setProfile, profile } = useContext(AppContext);
   console.log(profile);
 
@@ -19,7 +22,7 @@ const AccountScreen = (props: Props) => {
       {/* <ScrollView> */}
         <View style={{backgroundColor: theme.backgroundApp}}  className="p-2">
           <View style={{backgroundColor: theme.backgroundColor}} className="flex justify-center items-center border border-gray-400 rounded-md h-24 mb-2">
-            <Text style={{color: theme.textColor}}>Tên: {profile?.name} </Text>
+            <Text style={{color: theme.textColor}}>{t("name")}: {profile?.name} </Text>
             <Text style={{color: theme.textColor}}>Email: {profile?.email}</Text>
           </View>
         </View>
@@ -43,7 +46,7 @@ const AccountScreen = (props: Props) => {
               <View style={{backgroundColor: theme.backgroundColor}} className="flex flex-row items-center border-b border-b-gray-400 p-2 pl-4">
                 {React.createElement(item.icon, {height: 20, width: 20, fill: theme.textColor})}
                 <Text style={{color: theme.textColor}} className="ml-2 font-semibold text-[16px]">
-                  {item.title}
+                  {t(`${item.title}`)}
                 </Text>
               </View>
             </TouchableOpacity>

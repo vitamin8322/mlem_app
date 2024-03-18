@@ -6,11 +6,14 @@ import {useQuery} from '@tanstack/react-query';
 import {Dinner, StartApp, Test} from 'assets';
 import classNames from 'classnames';
 import React, {useCallback, useMemo, useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import Svg, {Circle, G, Line, Text as TextSvg} from 'react-native-svg';
 // import {PieChart} from 'react-native-svg-charts';
 const ReportScreen = () => {
+  const {t} = useTranslation('home');
+  
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth() + 1);
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [isSelectExp, setIsSelectExp] = useState(true);
@@ -52,7 +55,7 @@ const ReportScreen = () => {
       />
       <View className="flex flex-row justify-center items-center gap-x-2 px-3 mt-3">
         <View className="flex flex-row justify-between items-center w-[48%] h-12 px-2 border border-gray-400 rounded-md">
-          <Text>Chi tiêu</Text>
+          <Text>{t("expense")}</Text>
           <Text className="font-semibold text-red-500">
             -
             {formatNumberWithCommas(
@@ -62,7 +65,7 @@ const ReportScreen = () => {
           </Text>
         </View>
         <View className="flex flex-row justify-between items-center w-[48%] h-12 px-2 border border-gray-400 rounded-md">
-          <Text>Thu nhập</Text>
+          <Text>{t("income")}</Text>
           <Text className="font-semibold text-blue-500">
             +
             {formatNumberWithCommas(
@@ -73,7 +76,7 @@ const ReportScreen = () => {
         </View>
       </View>
       <View className="flex flex-row justify-between items-center h-12 px-2 border border-gray-400 rounded-md mx-3 mt-2">
-        <Text>Thu nhập</Text>
+        <Text>{t("expandinc")}</Text>
         <Text className="font-semibold ">
           {formatNumberWithCommas(
             String(
@@ -100,7 +103,7 @@ const ReportScreen = () => {
                   className={classNames('text-center font-semibold', {
                     'border-red-400': isSelectExp,
                   })}>
-                  Chi tiêu
+                  {t("expense")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -117,7 +120,7 @@ const ReportScreen = () => {
                   className={classNames('text-center font-semibold', {
                     'border-red-400': !isSelectExp,
                   })}>
-                  Thu nhập
+                  {t("income")}
                 </Text>
               </TouchableOpacity>
             </View>
