@@ -32,6 +32,8 @@
   "category": "Biểu tượng",
   "save": "Lưu",
   "addWallet": "Thêm ví",
-  "editWallet":"Sửa ví"
+  "editWallet":"Sửa ví",
+  "accountSetting": "Sửa tài khoản",
+  "totalReport": "Báo cáo toàn kì"
 
 }

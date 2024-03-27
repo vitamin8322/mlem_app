@@ -19,7 +19,10 @@ import {
   Card1,
   Card2,
   Card3,
+  AccountSetting,
+  BarChart,
 } from 'assets';
+import { Dimensions } from 'react-native';
 
 export const SCREENS = {
   HOME: 'home',
@@ -46,6 +49,9 @@ export const SCREENS = {
   LANGUAGE_SCREEN: 'LANGUAGE_SCREEN',
 
   CHANGE_COLOR_SCREEN: 'CHANGE_COLOR_SCREEN',
+  ACCOUNT_SETTING_SCREEN: 'ACCOUNT_SETTING_SCREEN',
+  TOTAL_REPORT_SCREEN: 'TOTAL_REPORT_SCREEN',
+
   test: 'home',
 };
 
@@ -63,6 +69,8 @@ export const REACT_QUERY_KEY = {
   TRANSACTION_EXP_MONTH: 'TRANSACTION_EXP_MONTH',
   TRANSACTION_MONTH: 'TRANSACTION_MONTH',
   ALL_WALLET_USER: 'ALL_WALLET_USER',
+  TOTAL_REPORT: 'TOTAL_REPORT',
+  
 } 
 
 export const LIST_ITEM_EXPENSES = [
@@ -146,9 +154,21 @@ export const LIST_ACCOUNT_SCREEN = [
     navigate: SCREENS.CHANGE_COLOR_SCREEN
   },
   {
+    icon: AccountSetting,
+    title: 'accountSetting',
+    id: '03',
+    navigate: SCREENS.ACCOUNT_SETTING_SCREEN
+  },
+  {
+    icon: BarChart,
+    title: 'totalReport',
+    id: '04',
+    navigate: SCREENS.TOTAL_REPORT_SCREEN
+  },
+  {
     icon: Logout,
     title: 'logout',
-    id: '03',
+    id: '09',
     navigate: null
   },
 ];
@@ -198,3 +218,6 @@ export const LIST_WALLET = [
 export const formatNumberWithCommas = (number: string) => {
   if (number) return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+export const screenWidth = Dimensions.get("window").width;
+export const screenHeight = Dimensions.get("window").height;

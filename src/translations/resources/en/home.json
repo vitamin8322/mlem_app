@@ -30,6 +30,8 @@
   "category": "Category",
   "save": "Save",
   "addWallet": "Create Wallet",
-  "editWallet":"Edit Wallet"
+  "editWallet":"Edit Wallet",
+  "accountSetting": "Account Setting",
+  "totalReport": "Total Report"
 
 }

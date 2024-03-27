@@ -33,3 +33,6 @@ export const dailyTransactions = (year: number, month: number) =>
   
 export const monthTransaction = (year: number, month: number) =>
   http.get<any>(`/api/transaction/monthTransaction?year=${year}&month=${month}`);
+
+export const reportTotal = () =>
+  http.get<any>(`/api/transaction/reportTotal`);

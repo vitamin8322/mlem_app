@@ -37,6 +37,8 @@ import Test from './images/test.png'
 import Language from './images/account/Language.svg'
 import Color from './images/account/Color.svg'
 import Logout from './images/account/Logout.svg'
+import AccountSetting from './images/account/AccountSetting.svg'
+import BarChart from './images/account/BarChart.svg'
 import English from './images/language/English.svg'
 import Vietnam from './images/language/Vietnam.svg'
 
@@ -49,6 +51,6 @@ export {
     Wallet, Pig, Gift, Invest,
     ArrowLeft, WouldInternet, Option, Language,
     Color,
-    English, Vietnam, Logout,
+    English, Vietnam, Logout, AccountSetting, BarChart,
     Card1, Card2, Card3
 }

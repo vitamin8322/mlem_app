@@ -7,6 +7,7 @@ import {
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import Icon, { IconType } from "react-native-dynamic-vector-icons";
+import { Eye, EyeClose } from "assets";
 
 export interface InputProps extends TextInputProps {
   errorMessage?: string;
@@ -55,9 +56,9 @@ const Input = ({
         <View className="absolute right-4 top-[20%]">
           <TouchableWithoutFeedback onPress={handleShowingPassword}>
             {isShowingPassword ? (
-              <Icon type={IconType.Feather} name={"eye"} color="#9BA4B5" />
+              <Eye height={20} width={20}/>
             ) : (
-              <Icon type={IconType.Feather} name={"eye-off"} color="#9BA4B5" />
+             <EyeClose height={20} width={20}/>
             )}
           </TouchableWithoutFeedback>
         </View>
