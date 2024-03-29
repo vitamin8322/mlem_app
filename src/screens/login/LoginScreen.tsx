@@ -18,6 +18,7 @@ import {SCREENS} from '@shared-constants';
 import {login} from '@services/apis/auth.api';
 import {useMutation} from '@tanstack/react-query';
 import {AppContext} from 'contexts/app.context';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 const LoginScreen = () => {
   const {setIsAuthenticated, setProfile} = useContext(AppContext);
@@ -34,12 +35,11 @@ const LoginScreen = () => {
     mutationFn: login,
   });
 
-  const submitLogin = handleSubmit((data) => {
-
+  const submitLogin = handleSubmit(data => {
     const body = {
       email: data.email,
-      password: data.password
-    }
+      password: data.password,
+    };
     // console.log(body);
 
     loginMutation.mutate(body, {
@@ -53,13 +53,14 @@ const LoginScreen = () => {
       },
       onError(error) {
         // console.log(error);
-
       },
     });
   });
+  console.log(loginMutation.isLoading);
 
   return (
     <View style={{height: '100%'}} className="h-full w-full">
+      <Spinner visible={loginMutation.isLoading} textContent={''} />
       <ImageBackground source={Background} resizeMode="cover">
         <View className="flex justify-center items-center h-40">
           <Text className="font-bold text-[18px] text-white">Đăng Nhập</Text>

@@ -8,6 +8,7 @@ import LanguageScreen from '@screens/languege';
 import ChangeColorScreen from '@screens/change-color/ChangeColorScreen';
 import AccountSettingScreen from '@screens/account-setting';
 import TotalReportScreen from '@screens/total-report';
+import TotalCategory from '@screens/total-category';
 const Stack = createStackNavigator();
 
 const AccountNavigation = () => {
@@ -22,6 +23,7 @@ const AccountNavigation = () => {
       <Stack.Screen name={SCREENS.CHANGE_COLOR_SCREEN} component={ChangeColorScreen} />
       <Stack.Screen name={SCREENS.ACCOUNT_SETTING_SCREEN} component={AccountSettingScreen} />
       <Stack.Screen name={SCREENS.TOTAL_REPORT_SCREEN} component={TotalReportScreen} />
+      <Stack.Screen name={SCREENS.TOTAL_CATEGORY_SCREEN} component={TotalCategory} />
     </Stack.Navigator>
   )
 }

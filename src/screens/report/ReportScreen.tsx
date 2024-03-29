@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next';
 import {View, Text, Image, FlatList, TouchableOpacity} from 'react-native';
 import {Calendar} from 'react-native-calendars';
 import Svg, {Circle, G, Line, Text as TextSvg} from 'react-native-svg';
-// import {PieChart} from 'react-native-svg-charts';
 const ReportScreen = () => {
   const {t} = useTranslation('home');
   

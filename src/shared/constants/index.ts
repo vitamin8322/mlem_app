@@ -21,6 +21,7 @@ import {
   Card3,
   AccountSetting,
   BarChart,
+  CircleChart,
 } from 'assets';
 import { Dimensions } from 'react-native';
 
@@ -51,6 +52,7 @@ export const SCREENS = {
   CHANGE_COLOR_SCREEN: 'CHANGE_COLOR_SCREEN',
   ACCOUNT_SETTING_SCREEN: 'ACCOUNT_SETTING_SCREEN',
   TOTAL_REPORT_SCREEN: 'TOTAL_REPORT_SCREEN',
+  TOTAL_CATEGORY_SCREEN: 'TOTAL_CATEGORY_SCREEN',
 
   test: 'home',
 };
@@ -70,6 +72,7 @@ export const REACT_QUERY_KEY = {
   TRANSACTION_MONTH: 'TRANSACTION_MONTH',
   ALL_WALLET_USER: 'ALL_WALLET_USER',
   TOTAL_REPORT: 'TOTAL_REPORT',
+  TOTAL_CATEGORY  : 'TOTAL_CATEGORY ',
   
 } 
 
@@ -164,6 +167,12 @@ export const LIST_ACCOUNT_SCREEN = [
     title: 'totalReport',
     id: '04',
     navigate: SCREENS.TOTAL_REPORT_SCREEN
+  },
+  {
+    icon: CircleChart,
+    title: 'totalCategory',
+    id: '04',
+    navigate: SCREENS.TOTAL_CATEGORY_SCREEN
   },
   {
     icon: Logout,

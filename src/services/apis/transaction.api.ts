@@ -36,3 +36,6 @@ export const monthTransaction = (year: number, month: number) =>
 
 export const reportTotal = () =>
   http.get<any>(`/api/transaction/reportTotal`);
+
+export const totalCategory = () =>
+  http.get<any>(`/api/transaction/totalCategory`);

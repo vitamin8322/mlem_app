@@ -43,7 +43,7 @@ const AccountScreen = (props: Props) => {
                   navigate(SCREENS.LOGIN_SCREEN)
                 }
               }}>
-              <View style={{backgroundColor: theme.backgroundColor}} className="flex flex-row items-center border-b border-b-gray-400 p-2 pl-4">
+              <View style={{backgroundColor: theme.backgroundColor}} className="flex flex-row items-center border-b border-b-gray-400 p-2 pl-4 h-10">
                 {React.createElement(item.icon, {height: 20, width: 20, fill: theme.textColor})}
                 <Text style={{color: theme.textColor}} className="ml-2 font-semibold text-[16px]">
                   {t(`${item.title}`)}
