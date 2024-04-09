@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Button,
+  FlatList,
   ScrollView,
   Text,
   TextInput,
@@ -17,13 +18,22 @@ import Modal from 'react-native-modal/dist/modal';
 import {Card1, Check, Dinner} from 'assets';
 import CardCategory from '@shared-components/CardCategory';
 import {
+  LIST_CATEGORY,
   LIST_ITEM_EXPENSES,
+  LIST_ITEM_EXPENSES_UPDATE,
   LIST_ITEM_REVENUE,
+  LIST_ITEM_REVENUE_UPDATE,
   LIST_WALLET,
   REACT_QUERY_KEY,
+  SCREENS,
 } from '@shared-constants';
 import {useTheme} from 'contexts/app.context';
-import {MutateOptions, useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {
+  MutateOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import {
   createTransaction,
   deleteTransaction,
@@ -33,59 +43,25 @@ import {getAllWalletUser} from '@services/apis/wallet.api';
 import SelectWallet from '@shared-components/SelectWallet';
 import {Modalize} from 'react-native-modalize';
 import {Wallet} from 'types/wallet.type';
-import { TransactionResponseApiSuccess } from 'types/transaction.type';
+import {TransactionResponseApiSuccess} from 'types/transaction.type';
+import {navigate} from 'react-navigation-helpers';
+import {useTranslation} from 'react-i18next';
+import SelectType from '@shared-components/SelectType';
+import {allCategoryUser} from '@services/apis/category.api';
 type Props = {};
-LocaleConfig.locales['fr'] = {
-  monthNames: [
-    'Janvier',
-    'Février',
-    'Mars',
-    'Avril',
-    'Mai',
-    'Juin',
-    'Juillet',
-    'Août',
-    'Septembre',
-    'Octobre',
-    'Novembre',
-    'Décembre',
-  ],
-  monthNamesShort: [
-    'Janv.',
-    'Févr.',
-    'Mars',
-    'Avril',
-    'Mai',
-    'Juin',
-    'Juil.',
-    'Août',
-    'Sept.',
-    'Oct.',
-    'Nov.',
-    'Déc.',
-  ],
-  dayNames: [
-    'Dimanche',
-    'Lundi',
-    'Mardi',
-    'Mercredi',
-    'Jeudi',
-    'Vendredi',
-    'Samedi',
-  ],
-  dayNamesShort: ['Dim.', 'Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.'],
-  today: "Aujourd'hui",
-};
 
 const TransactionScreen = ({navigation, route}: any) => {
   const {params} = route;
   const {theme} = useTheme();
   const modalizeRef = useRef<Modalize>(null);
   const inputRef = useRef(null);
+  const {t} = useTranslation('home');
 
   const queryClient = useQueryClient();
-  
-  const [selectTransaction, setSelectTransaction] = useState<number>(params?.props.item.type==='rev' ?1 :0);
+
+  const [selectTransaction, setSelectTransaction] = useState<number>(
+    params?.props.item.type === 'rev' ? 1 : 0,
+  );
   const [selectedDateModal, setSelectedDateModal] = useState<any>();
   const [selectedDate, setSelectedDate] = useState<any>(
     String(params?.props.item.money) !== 'undefined'
@@ -110,16 +86,44 @@ const TransactionScreen = ({navigation, route}: any) => {
       : '',
   );
 
+  const [icon, setIcon] = useState<any>();
+  const [dataExp, setDataExp] = useState<any>();
+  const [dataRev, setDataRev] = useState<any>();
+
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const {isLoading: isWalletUserDataLoading, data: walletUserData} =
-    useQuery({
-      queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
-      queryFn: () => getAllWalletUser(),
-      onSuccess(response) {},
-    });
+  const {isLoading: isWalletUserDataLoading, data: walletUserData} = useQuery({
+    queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
+    queryFn: () => getAllWalletUser(),
+    onSuccess(response) {},
+  });
+
+  const edit = [
+    {
+      name: 'Sửa',
+      id: 'edit',
+      navigate: 'LIST_CATEGORY_SCREEN',
+    },
+  ];
+
+  const {isLoading: isCategoryDataLoading, data: categoryData} = useQuery({
+    queryKey: [REACT_QUERY_KEY.ALL_CATEGORY],
+    queryFn: () => allCategoryUser(),
+    onSuccess(response) {
+      setDataExp([])
+      setDataRev([])
+      const expItems = response.data.data.filter(item => item.type === 'exp');
+      const revItems = response.data.data.filter(item => item.type === 'rev');
+      console.log(12312);
+      
+      setDataExp([...LIST_ITEM_EXPENSES_UPDATE, ...expItems, ...edit]);
+      setDataRev([...LIST_ITEM_REVENUE_UPDATE, ...revItems, ...edit]);
+      console.log(LIST_ITEM_EXPENSES_UPDATE.concat(expItems));
+
+    },
+  });
 
   const [idWallet, setIdWallet] = useState<Wallet>(() => {
     return walletUserData?.data.data.find((wallet: Wallet) => {
@@ -173,99 +177,92 @@ const TransactionScreen = ({navigation, route}: any) => {
 
   const handleTransaction = () => {
     if (valueMoney === '0' && idWallet === undefined) {
-        return;
+      return;
     }
 
     const body = {
-        money: Number(valueMoney),
-        note: note,
-        type: selectTransaction === 0 ? 'exp' : 'rev',
-        date: selectedDate,
-        idCategory: idCategory,
-        wallet: idWallet && idWallet._id,
-        ...(params && { id: params.props.item._id })
+      money: Number(valueMoney),
+      note: note,
+      type: selectTransaction === 0 ? 'exp' : 'rev',
+      date: selectedDate,
+      idCategory: idCategory,
+      wallet: idWallet && idWallet._id,
+      icon: icon,
+      ...(params && {id: params.props.item._id}),
     };
 
     const invalidateQueries = () => {
-        [
-            REACT_QUERY_KEY.TRANSACTION,
-            REACT_QUERY_KEY.PERCENT_TRANSACTION,
-            REACT_QUERY_KEY.DAILY_TRANSACTION,
-            [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'isoWeek'],
-            [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'month'],
-            REACT_QUERY_KEY.TRANSACTION_EXP_WEEK,
-            REACT_QUERY_KEY.TRANSACTION_EXP_MONTH,
-            REACT_QUERY_KEY.ALL_WALLET_USER,
-        ].forEach(queryKey => {
-            queryClient.invalidateQueries({ queryKey });
-        });
+      [
+        REACT_QUERY_KEY.TRANSACTION,
+        REACT_QUERY_KEY.PERCENT_TRANSACTION,
+        REACT_QUERY_KEY.DAILY_TRANSACTION,
+        [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'isoWeek'],
+        [REACT_QUERY_KEY.PERCENT_TRANSACTION, 'month'],
+        REACT_QUERY_KEY.TRANSACTION_EXP_WEEK,
+        REACT_QUERY_KEY.TRANSACTION_EXP_MONTH,
+        REACT_QUERY_KEY.ALL_WALLET_USER,
+        REACT_QUERY_KEY.TOTAL_REPORT,
+        REACT_QUERY_KEY.TOTAL_CATEGORY,
+      ].forEach(queryKey => {
+        queryClient.invalidateQueries({queryKey});
+      });
     };
 
-    const mutationOptions: MutateOptions<TransactionResponseApiSuccess, any, {id?:string, money: number; note: string; type: string; date: string; idCategory: string; wallet: string; }, unknown> = {
-        onSuccess: (response: any) => {
-            console.log(params ? 'edit' : 'add');
-            setValueMoney('0');
-            setNote('');
-            invalidateQueries();
-        },
-        onError: (error: any) => {
-            console.log(error);
-        },
+    const mutationOptions: MutateOptions<
+      TransactionResponseApiSuccess,
+      any,
+      {
+        id?: string;
+        money: number;
+        note: string;
+        type: string;
+        date: string;
+        idCategory: string;
+        wallet: string;
+      },
+      unknown
+    > = {
+      onSuccess: (response: any) => {
+        console.log(params ? 'edit' : 'add');
+        setValueMoney('0');
+        setNote('');
+        invalidateQueries();
+      },
+      onError: (error: any) => {
+        console.log(error);
+      },
     };
 
-    const mutationFunction = params ? editTransactionMutation : transactionMutation;
-
+    const mutationFunction = params
+      ? editTransactionMutation
+      : transactionMutation;
+    // console.log('body', body);
     mutationFunction.mutate(body, mutationOptions);
-};
-
+  };
 
   const onOpenModalize = () => {
     modalizeRef.current?.open();
   };
-
+  console.log(dataExp);
+  
+  const handleSelectExp = () => {
+    setIdCategory('exp01');
+  };
+  const handleSelectRev = () => {
+    setIdCategory('rev01');
+  };
   return (
     <>
       <View
         style={{backgroundColor: theme.backgroundApp, height: '100%'}}
         className="px-3">
-        <View className="flex flex-row justify-center items-center w-full bg-gray-400 h-10 my-3 rounded-md">
-          <TouchableOpacity
-            onPress={() => {
-              setSelectTransaction(0);
-              setIdCategory('exp01');
-            }}
-            style={{
-              backgroundColor:
-                selectTransaction === 0 ? theme.backgroundColor : 'transparent',
-            }}
-            className={classNames(
-              'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
-            )}>
-            <View>
-              <Text style={{color: theme.textColor}} className="text-center">
-                Tiền chi
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              setIdCategory('rev01');
-              setSelectTransaction(1);
-            }}
-            style={{
-              backgroundColor:
-                selectTransaction === 1 ? theme.backgroundColor : 'transparent',
-            }}
-            className={classNames(
-              'w-[49%] h-9 flex flex-row justify-center items-center rounded-md',
-            )}>
-            <View className="w-[48%]">
-              <Text style={{color: theme.textColor}} className="text-center">
-                Tiền thu
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
+        <SelectType
+          setSelectTransaction={setSelectTransaction}
+          selectTransaction={selectTransaction}
+          // setIdCategory={setIdCategory}
+          handleSelectExp={handleSelectExp}
+          handleSelectRev={handleSelectRev}
+        />
         <View className="flex gap-y-2">
           <View className="flex flex-row justify-center items-center h-12 ">
             <View className="w-3/12">
@@ -351,30 +348,66 @@ const TransactionScreen = ({navigation, route}: any) => {
               Danh mục:
             </Text>
             <ScrollView nestedScrollEnabled={true}>
-              <View className="flex flex-row items-center gap-2 flex-wrap px-2 mt-1">
-                {selectTransaction === 0
-                  ? LIST_ITEM_EXPENSES.map((item, index) => {
-                      return (
-                        <CardCategory
-                          key={index}
-                          idCategory={idCategory}
-                          setIdCategory={setIdCategory}
-                          index={index}
-                          item={item}
-                        />
-                      );
-                    })
-                  : LIST_ITEM_REVENUE.map((item, index) => {
-                      return (
-                        <CardCategory
-                          key={index}
-                          idCategory={idCategory}
-                          setIdCategory={setIdCategory}
-                          index={index}
-                          item={item}
-                        />
-                      );
-                    })}
+              <View className="">
+                {selectTransaction === 0 ? (
+                  <FlatList
+                    data={dataExp}
+                    numColumns={4}
+                    keyExtractor={item => {
+                      return item._id}}
+                    renderItem={({item, index}) => (
+                      <CardCategory
+                        key={index}
+                        idCategory={idCategory}
+                        setIdCategory={setIdCategory}
+                        setIcon={setIcon}
+                        index={index}
+                        item={item}
+                        selectTransaction={selectTransaction}
+                      />
+                    )}
+                  />
+                ) : (
+                  <FlatList
+                    data={dataRev}
+                    numColumns={4}
+                    keyExtractor={item => item.id}
+                    renderItem={({item, index}) => (
+                      <CardCategory
+                        key={index}
+                        idCategory={idCategory}
+                        setIdCategory={setIdCategory}
+                        setIcon={setIcon}
+                        index={index}
+                        item={item}
+                      />
+                    )}
+                  />
+                )}
+                {/* {categoryData?.data.data.map((item, id) => {
+                  console.log('item', item);
+                  return (
+                    <View
+                      className={
+                        'flex justify-center items-center h-16 w-[22%] border border-gray-500 rounded-md m-1'
+                      }>
+                      <Text>asd</Text>
+                    </View>
+                  );
+                })} */}
+
+                {/* <TouchableOpacity
+                  onPress={() => {
+                    navigate(SCREENS.LIST_CATEGORY_SCREEN, {
+                      page: selectTransaction,
+                    });
+                  }}
+                  style={{borderColor: theme.textColor}}
+                  className={classNames(
+                    'flex justify-center items-center h-16 w-[21%] border border-gray-500 rounded-md',
+                  )}>
+                  <Text className={'text-center'}>{t('edit')}</Text>
+                </TouchableOpacity> */}
               </View>
             </ScrollView>
           </View>
@@ -484,6 +517,8 @@ const TransactionScreen = ({navigation, route}: any) => {
               className="w-16 h-10"
               onPress={() => {
                 toggleModal();
+                // console.log(selectedDateModal);
+
                 setSelectedDate(selectedDateModal);
               }}>
               <Text className="text-blue-400 font-semibold text-[18px]">

@@ -31,6 +31,8 @@ export const SCREENS = {
   REPORT: 'report',
   ACCOUNT: 'account',
   ADD_TRANSACTION: 'addTransaction',
+  LIST_CATEGORY_SCREEN: 'LIST_CATEGORY_SCREEN',
+  CREATE_OR_EDIT_CATEGORY_SCREEN: 'CREATE_OR_EDIT_CATEGORY_SCREEN',
 
   LOGIN: 'Login',
   BOTTOM: 'Bottom',
@@ -53,6 +55,7 @@ export const SCREENS = {
   ACCOUNT_SETTING_SCREEN: 'ACCOUNT_SETTING_SCREEN',
   TOTAL_REPORT_SCREEN: 'TOTAL_REPORT_SCREEN',
   TOTAL_CATEGORY_SCREEN: 'TOTAL_CATEGORY_SCREEN',
+  ANNUAL_REPORT_SCREEN: 'ANNUAL_REPORT_SCREEN',
 
   test: 'home',
 };
@@ -73,6 +76,7 @@ export const REACT_QUERY_KEY = {
   ALL_WALLET_USER: 'ALL_WALLET_USER',
   TOTAL_REPORT: 'TOTAL_REPORT',
   TOTAL_CATEGORY  : 'TOTAL_CATEGORY ',
+  ALL_CATEGORY  :  'ALL_CATEGORY',
   
 } 
 
@@ -143,6 +147,135 @@ export const LIST_ITEM_REVENUE = [
   },
 ];
 
+
+export const LIST_ITEM_EXPENSES_UPDATE = [
+  {
+    icon: 'Dinner',
+    name: 'Ăn uống',
+    _id: 'exp01',
+  },
+  {
+    icon: 'Car',
+    name: 'Đi lại',
+    _id: 'exp02',
+  },
+  {
+    icon: 'Cloth',
+    name: 'Quần áo',
+    _id: 'exp03',
+  },
+  {
+    icon: 'Cosmetics',
+    name: 'Mỹ phẩm',
+    _id: 'exp04',
+  },
+  {
+    icon: 'Education',
+    name: 'Giáo dục',
+    _id: 'exp05',
+  },
+  {
+    icon: 'House',
+    name: 'Tiền nhà',
+    _id: 'exp06',
+  },
+  {
+    icon: 'Medical',
+    name: 'Y tế',
+    fill: 'red',
+    _id: 'exp07',
+  },
+  {
+    icon: 'Smartphone',
+    name: 'Phí liên lạc',
+    _id: 'exp08',
+  },
+];
+
+export const LIST_ITEM_REVENUE_UPDATE = [
+  {
+    icon: 'Wallet',
+    title: 'Tiền lương',
+    _id: 'rev01',
+  },
+  {
+    icon: 'Pig',
+    title: 'Tiền phụ cấp',
+    _id: 'rev02',
+  },
+  {
+    icon: 'Gift',
+    title: 'Tiền thưởng',
+    _id: 'rev03',
+  },
+  {
+    icon: 'Invest',
+    title: 'Đầu tư',
+    _id: 'rev04',
+  },
+];
+
+export const LIST_CATEGORY = {
+  Invest: {
+    icon: Invest,
+    name: 'Invest'
+  },
+  Wallet: {
+    icon: Wallet,
+    name: 'Wallet'
+  },
+  Pig: {
+    icon: Pig,
+    name: 'Pig'
+  },
+  Gift: {
+    icon: Gift,
+    name: 'Gift'
+  },
+  Dinner: {
+    icon: Dinner,
+    name: 'Dinner'
+  },
+  Car: {
+    icon: Car,
+    name: 'Car'
+  },
+  Cloth: {
+    icon: Cloth,
+    name: 'Cloth'
+  },
+  Cosmetics: {
+    icon: Cosmetics,
+    name: 'Cosmetics'
+  },
+  Education: {
+    icon: Education,
+    name: 'Education'
+  },
+  House: {
+    icon: House,
+    name: 'House'
+  },
+  Medical: {
+    icon: Medical,
+    name: 'Medical'
+  },
+  Smartphone: {
+    icon: Smartphone,
+    name: 'Smartphone'
+  },
+}
+
+export const LIST_COLOR_CATEGORY = {
+  'f5b342': 'f5b342',
+  '314eb5': '314eb5',
+  'e523c4': 'e523c4',
+  '1fc72b': '1fc72b',
+  '000000': '000000',
+  'fff': 'fff',
+};
+
+
 export const LIST_ACCOUNT_SCREEN = [
   {
     icon: Language,
@@ -173,6 +306,12 @@ export const LIST_ACCOUNT_SCREEN = [
     title: 'totalCategory',
     id: '04',
     navigate: SCREENS.TOTAL_CATEGORY_SCREEN
+  },
+  {
+    icon: BarChart,
+    title: 'annualReport',
+    id: '05',
+    navigate: SCREENS.ANNUAL_REPORT_SCREEN
   },
   {
     icon: Logout,
@@ -225,6 +364,8 @@ export const LIST_WALLET = [
 
 
 export const formatNumberWithCommas = (number: string) => {
+  // console.log(number);
+  // /\B(?=(\d{3})+(?!\d))/g
   if (number) return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 

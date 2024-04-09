@@ -35,6 +35,12 @@ const BarchartHome = (props: Props) => {
     data[data.length-1].totalMoney,
   );
 
+  if (data[data.length - 2].totalMoney === 0 && data[data.length - 1].totalMoney === 0) {
+    return (
+      <Text className="text-center">No data</Text>
+    )
+  }
+
   return (
     <View>
       <BarChart

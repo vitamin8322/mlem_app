@@ -49,7 +49,8 @@ const HomeScreen = () => {
       queryFn: () => transactionType(''),
     },
   );
-
+  console.log(transactionData);
+  
   const {isLoading: isWalletUserDataLoading, data: walletUserData} = useQuery({
     queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
     queryFn: () => getAllWalletUser(),
@@ -292,7 +293,7 @@ const HomeScreen = () => {
             </Text>
             <TouchableOpacity
               onPress={() => {
-                navigate(t(SCREENS.TRANSACTION_HISTORY));
+                navigate(t(SCREENS.ADD_TRANSACTION));
               }}>
               <Text className="font-semibold text-green-500">{t("viewAll")}</Text>
             </TouchableOpacity>

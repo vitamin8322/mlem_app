@@ -1,4 +1,5 @@
 import {
+  LIST_CATEGORY,
   LIST_ITEM_EXPENSES,
   LIST_ITEM_REVENUE,
   SCREENS,
@@ -17,7 +18,7 @@ type Props = {
   isTransactionHistory?: boolean;
   item: any;
   isPercent?: boolean;
-  isNavigate?: boolean
+  isNavigate?: boolean;
 };
 
 const CardTransaction = (props: Props) => {
@@ -29,7 +30,7 @@ const CardTransaction = (props: Props) => {
     isTransactionHistory,
     item,
     isPercent,
-    isNavigate
+    isNavigate,
   } = props;
 
   return (
@@ -43,6 +44,26 @@ const CardTransaction = (props: Props) => {
         }
       }}>
       <View className="flex flex-row justify-between items-center px-2 py-2">
+       {item.icon && <View className="flex flex-row items-center">
+          {React.createElement(LIST_CATEGORY[item.icon].icon, {
+            height: 30,
+            width: 30,
+            fill: 'blue',
+          })}
+          <View className="ml-3">
+            <Text style={{color: theme.textColor}} className="font-semibold">
+              {item.name}
+            </Text>
+            {isExpenses && (
+              <Text className="text-gray-500">
+                {formatNumberWithCommas(
+                  item?.money ? item?.money : item?.value,
+                )}{' '}
+                đ
+              </Text>
+            )}
+          </View>
+        </View>}
         {LIST_ITEM_REVENUE.filter(itemRevenue => {
           return itemRevenue.id === item.idCategory;
         }).map((filteredItem, index) => (

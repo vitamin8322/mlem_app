@@ -3,11 +3,11 @@ import { Transaction, TransactionResponseApiSuccess } from 'types/transaction.ty
 import {UserResponseApiSuccess} from 'types/user.type';
 import http from 'utils/http';
 
-export const createTransaction = (data: { money: number, note: string, type: string, date: string, idCategory: string, wallet: string }) => {
+export const createTransaction = (data: { money: number, note: string, type: string, date: string, idCategory: string, wallet: string, icon: string }) => {
   return http.post<TransactionResponseApiSuccess>('/api/transaction/create', queryString.stringify(data));
 };
 
-export const editTransaction = (data: { id: string,money: number, note: string, type: string, date: string, idCategory: string, wallet: string }) => {
+export const editTransaction = (data: { id: string,money: number, note: string, type: string, date: string, idCategory: string, wallet: string, icon: string }) => {
   return http.post<TransactionResponseApiSuccess>('/api/transaction/edit', queryString.stringify(data));
 };
 
@@ -39,3 +39,6 @@ export const reportTotal = () =>
 
 export const totalCategory = () =>
   http.get<any>(`/api/transaction/totalCategory`);
+
+export const reportYear = (year: number) =>
+  http.get<any>(`/api/transaction/reportYear?year=${year}`);

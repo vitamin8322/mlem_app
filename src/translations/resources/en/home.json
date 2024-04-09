@@ -33,6 +33,7 @@
   "editWallet":"Edit Wallet",
   "accountSetting": "Account Setting",
   "totalReport": "Total Report",
-  "totalCategory": "Total Category"
-
+  "totalCategory": "Total Category",
+  "annualReport": "Annual Report",
+  "create": "Create"
 }

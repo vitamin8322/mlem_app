@@ -35,6 +35,7 @@
   "editWallet":"Sửa ví",
   "accountSetting": "Sửa tài khoản",
   "totalReport": "Báo cáo toàn kì",
-  "totalCategory": "Báo cáo danh mục toàn kì"
-
+  "totalCategory": "Báo cáo danh mục toàn kì",
+  "annualReport": "Báo cáo hàng năm",
+  "create": "Tạo mới"
 }
