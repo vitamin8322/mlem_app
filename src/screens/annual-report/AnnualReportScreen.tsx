@@ -35,7 +35,7 @@ const AnnualReportScreen = () => {
       setDataBarChart(data);
     },
   });
-  console.log('dataBarChart', dataBarChart);
+  // console.log('dataBarChart', dataBarChart);
   return (
     <LayoutBase name={t('annualReport')}>
       <ScrollView>

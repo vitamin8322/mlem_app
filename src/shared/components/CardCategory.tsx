@@ -32,7 +32,6 @@ const CardCategory = (props: Props) => {
       setIcon(item?.icon);
     }
   };
-  // console.log(1,item?.icon);
 
   return (
     <TouchableOpacity
@@ -44,11 +43,11 @@ const CardCategory = (props: Props) => {
       )}>
       {item?.icon && (
         <View className="w-8 h-8">
-          {/* { React.createElement(item?.icon,  { height: 30, width: 30, fill:'blue' })} */}
           {React.createElement(LIST_CATEGORY[item?.icon]?.icon, {
             height: 30,
             width: 30,
-            fill: 'blue',
+            fill:  item?.fill ? `#${item?.fill}` : '#000000' ,
+            // fill:  '#1fc72b' ,
           })}
         </View>
       )}

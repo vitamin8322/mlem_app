@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   Alert,
   Button,
@@ -27,7 +27,7 @@ import {
   REACT_QUERY_KEY,
   SCREENS,
 } from '@shared-constants';
-import {useTheme} from 'contexts/app.context';
+import {AppContext, useTheme} from 'contexts/app.context';
 import {
   MutateOptions,
   useMutation,
@@ -52,6 +52,7 @@ type Props = {};
 
 const TransactionScreen = ({navigation, route}: any) => {
   const {params} = route;
+  const {category} = useContext(AppContext);
   const {theme} = useTheme();
   const modalizeRef = useRef<Modalize>(null);
   const inputRef = useRef(null);
@@ -116,15 +117,13 @@ const TransactionScreen = ({navigation, route}: any) => {
       setDataRev([])
       const expItems = response.data.data.filter(item => item.type === 'exp');
       const revItems = response.data.data.filter(item => item.type === 'rev');
-      console.log(12312);
       
       setDataExp([...LIST_ITEM_EXPENSES_UPDATE, ...expItems, ...edit]);
       setDataRev([...LIST_ITEM_REVENUE_UPDATE, ...revItems, ...edit]);
-      console.log(LIST_ITEM_EXPENSES_UPDATE.concat(expItems));
 
     },
   });
-
+  
   const [idWallet, setIdWallet] = useState<Wallet>(() => {
     return walletUserData?.data.data.find((wallet: Wallet) => {
       if (params) {
@@ -190,7 +189,8 @@ const TransactionScreen = ({navigation, route}: any) => {
       icon: icon,
       ...(params && {id: params.props.item._id}),
     };
-
+    console.log('body', body);
+    
     const invalidateQueries = () => {
       [
         REACT_QUERY_KEY.TRANSACTION,
@@ -243,13 +243,12 @@ const TransactionScreen = ({navigation, route}: any) => {
   const onOpenModalize = () => {
     modalizeRef.current?.open();
   };
-  console.log(dataExp);
   
   const handleSelectExp = () => {
-    setIdCategory('exp01');
+    setIdCategory('6616005d96c029429bf6cf8e');
   };
   const handleSelectRev = () => {
-    setIdCategory('rev01');
+    setIdCategory('66164711514ba9288c92c7c0');
   };
   return (
     <>
@@ -351,10 +350,27 @@ const TransactionScreen = ({navigation, route}: any) => {
               <View className="">
                 {selectTransaction === 0 ? (
                   <FlatList
-                    data={dataExp}
+                    data={[...category.expCategory, ...edit]}
                     numColumns={4}
                     keyExtractor={item => {
-                      return item._id}}
+                      return item.id}}
+                    renderItem={({item, index}) => (
+                      <CardCategory
+                        key={item._id}
+                        idCategory={idCategory}
+                        setIdCategory={setIdCategory}
+                        setIcon={setIcon}
+                        index={index}
+                        item={item}
+                        selectTransaction={selectTransaction}
+                      />
+                    )}
+                  />
+                ) : (
+                  <FlatList
+                  data={[...category.revCategory, ...edit]}
+                    numColumns={4}
+                    keyExtractor={item => item.id}
                     renderItem={({item, index}) => (
                       <CardCategory
                         key={index}
@@ -367,47 +383,7 @@ const TransactionScreen = ({navigation, route}: any) => {
                       />
                     )}
                   />
-                ) : (
-                  <FlatList
-                    data={dataRev}
-                    numColumns={4}
-                    keyExtractor={item => item.id}
-                    renderItem={({item, index}) => (
-                      <CardCategory
-                        key={index}
-                        idCategory={idCategory}
-                        setIdCategory={setIdCategory}
-                        setIcon={setIcon}
-                        index={index}
-                        item={item}
-                      />
-                    )}
-                  />
                 )}
-                {/* {categoryData?.data.data.map((item, id) => {
-                  console.log('item', item);
-                  return (
-                    <View
-                      className={
-                        'flex justify-center items-center h-16 w-[22%] border border-gray-500 rounded-md m-1'
-                      }>
-                      <Text>asd</Text>
-                    </View>
-                  );
-                })} */}
-
-                {/* <TouchableOpacity
-                  onPress={() => {
-                    navigate(SCREENS.LIST_CATEGORY_SCREEN, {
-                      page: selectTransaction,
-                    });
-                  }}
-                  style={{borderColor: theme.textColor}}
-                  className={classNames(
-                    'flex justify-center items-center h-16 w-[21%] border border-gray-500 rounded-md',
-                  )}>
-                  <Text className={'text-center'}>{t('edit')}</Text>
-                </TouchableOpacity> */}
               </View>
             </ScrollView>
           </View>

@@ -33,6 +33,7 @@ import Check from './images/category/Check.svg'
 import Card1 from './images/category/Card1.svg'
 import Card2 from './images/category/Card2.svg'
 import Card3 from './images/category/Card3.svg'
+import Delete from './images/category/Delete.svg'
 import Test from './images/test.png'
 import Language from './images/account/Language.svg'
 import Color from './images/account/Color.svg'
@@ -50,6 +51,7 @@ export {
     Eye, EyeClose,
     Dinner, Car, Cloth, Cosmetics, Education, House, Medical, Smartphone,
     Wallet, Pig, Gift, Invest,
+    Delete,
     ArrowLeft, WouldInternet, Option, Language,
     Color,
     English, Vietnam, Logout, AccountSetting, BarChart, CircleChart,

@@ -6,6 +6,7 @@ import SplashScreen from 'react-native-splash-screen';
 import {NativeBaseProvider} from 'native-base';
 import i18n from './src/translations/i18n';
 import {I18nextProvider} from 'react-i18next';
+import {ToastProvider} from 'react-native-toast-notifications';
 import Navigation from 'navigation';
 import {MenuProvider} from 'react-native-popup-menu';
 import {asyncStorageService} from 'utils/storage';
@@ -25,9 +26,7 @@ function App(): JSX.Element {
     LogBox.ignoreLogs([
       'VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.',
     ]);
-    LogBox.ignoreLogs([
-      `Possible unhandled promise rejection`,
-    ]);
+    LogBox.ignoreLogs([`Possible unhandled promise rejection`]);
     LogBox.ignoreLogs([
       "Warning: This synthetic event is reused for performance reasons. If you're seeing this, you're accessing the property `nativeEvent` on a released/nullified synthetic event. This is set to null. If you must keep the original synthetic event around, use event.persist(). See https://reactjs.org/link/event-pooling for more information.",
     ]);
@@ -46,7 +45,9 @@ function App(): JSX.Element {
           <NativeBaseProvider>
             <MenuProvider>
               <I18nextProvider i18n={i18n}>
-                <Navigation />
+                <ToastProvider>
+                  <Navigation />
+                </ToastProvider>
               </I18nextProvider>
             </MenuProvider>
           </NativeBaseProvider>

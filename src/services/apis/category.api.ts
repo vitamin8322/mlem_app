@@ -7,8 +7,12 @@ export const createCategory = (data: { name: string, icon: string, fill: string,
     return http.post<CategoryResponseApiSuccess>('/api/category/create', queryString.stringify(data));
 };
 
-export const editCategory = (data: { name: string, icon: string, fill: string, type: string }) => {
+export const editCategory = (data: { id: string, name: string, icon: string, fill: string, type: string }) => {
     return http.post<CategoryResponseApiSuccess>('/api/category/edit', queryString.stringify(data));
+};
+
+export const deleteCategory = (id?: string) => {
+    return http.post<CategoryResponseApiSuccess>(`/api/category/delete?id=${id}`);
 };
 
 export const allCategoryUser = () => {

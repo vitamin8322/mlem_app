@@ -147,71 +147,77 @@ export const LIST_ITEM_REVENUE = [
   },
 ];
 
-
 export const LIST_ITEM_EXPENSES_UPDATE = [
   {
     icon: 'Dinner',
     name: 'Ăn uống',
-    _id: 'exp01',
+    _id: '6616005d96c029429bf6cf8e',
+    fill: 'e34646'
   },
   {
     icon: 'Car',
     name: 'Đi lại',
-    _id: 'exp02',
+    _id: '661600b996c029429bf6cf9a',
+    fill: 'de0a0a'
   },
   {
     icon: 'Cloth',
     name: 'Quần áo',
-    _id: 'exp03',
+    _id: '6616010d96c029429bf6cf9e',
+    fill: '000000'
   },
   {
     icon: 'Cosmetics',
     name: 'Mỹ phẩm',
-    _id: 'exp04',
+    _id: '6616014096c029429bf6cfa0',
+    fill: 'e523c4'
   },
   {
     icon: 'Education',
     name: 'Giáo dục',
-    _id: 'exp05',
+    _id: '6616014e96c029429bf6cfa2',
+    fill: '1fc72b'
   },
   {
     icon: 'House',
     name: 'Tiền nhà',
-    _id: 'exp06',
+    _id: '6616015b96c029429bf6cfa4',
+    fill: '000000'
   },
   {
     icon: 'Medical',
     name: 'Y tế',
-    fill: 'red',
-    _id: 'exp07',
+    _id: '6616016f96c029429bf6cfa6',
+    fill: '000000'
   },
   {
     icon: 'Smartphone',
     name: 'Phí liên lạc',
-    _id: 'exp08',
+    _id: '6616017b96c029429bf6cfa8',
+    fill: '000000'
   },
 ];
 
 export const LIST_ITEM_REVENUE_UPDATE = [
   {
     icon: 'Wallet',
-    title: 'Tiền lương',
-    _id: 'rev01',
+    name: 'Tiền lương',
+    _id: '66164711514ba9288c92c7c0',
   },
   {
     icon: 'Pig',
-    title: 'Tiền phụ cấp',
-    _id: 'rev02',
+    name: 'Tiền phụ cấp',
+    _id: '66164722514ba9288c92c7c2',
   },
   {
     icon: 'Gift',
-    title: 'Tiền thưởng',
-    _id: 'rev03',
+    name: 'Tiền thưởng',
+    _id: '66164731514ba9288c92c7c4',
   },
   {
     icon: 'Invest',
-    title: 'Đầu tư',
-    _id: 'rev04',
+    name: 'Đầu tư',
+    _id: '66164740514ba9288c92c7c6',
   },
 ];
 
@@ -273,6 +279,8 @@ export const LIST_COLOR_CATEGORY = {
   '1fc72b': '1fc72b',
   '000000': '000000',
   'fff': 'fff',
+  'e34646': 'e34646',
+  'de0a0a': 'de0a0a',
 };
 
 

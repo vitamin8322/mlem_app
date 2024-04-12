@@ -32,71 +32,79 @@ const CardTransaction = (props: Props) => {
     isPercent,
     isNavigate,
   } = props;
+  const icon =
+    LIST_CATEGORY[item?.icon]?.icon ||
+    LIST_CATEGORY[item?.idCategory?.icon]?.icon;
 
+    
   return (
-    <TouchableOpacity
-      onPress={() => {
-        if (isNavigate) {
-          push(`${t(SCREENS.ADD_TRANSACTION)}`, {
-            props,
-          });
-          navigate(`${t(SCREENS.ADD_TRANSACTION)}`);
-        }
-      }}>
-      <View className="flex flex-row justify-between items-center px-2 py-2">
-       {item.icon && <View className="flex flex-row items-center">
-          {React.createElement(LIST_CATEGORY[item.icon].icon, {
-            height: 30,
-            width: 30,
-            fill: 'blue',
-          })}
-          <View className="ml-3">
-            <Text style={{color: theme.textColor}} className="font-semibold">
-              {item.name}
-            </Text>
-            {isExpenses && (
-              <Text className="text-gray-500">
-                {formatNumberWithCommas(
-                  item?.money ? item?.money : item?.value,
-                )}{' '}
-                đ
-              </Text>
-            )}
-          </View>
-        </View>}
-        {LIST_ITEM_REVENUE.filter(itemRevenue => {
-          return itemRevenue.id === item.idCategory;
-        }).map((filteredItem, index) => (
-          <View key={index} className="flex flex-row items-center">
-            {React.createElement(filteredItem?.icon, {
-              height: 30,
-              width: 30,
-              fill: 'blue',
-            })}
-            <View className="ml-3">
-              <Text style={{color: theme.textColor}} className="font-semibold">
-                {filteredItem.title}
-              </Text>
-              {isExpenses && (
-                <Text className="text-gray-500">
-                  {formatNumberWithCommas(item?.money)} đ
+    item && (
+      <TouchableOpacity
+        onPress={() => {
+          if (isNavigate) {
+            push(`${t(SCREENS.ADD_TRANSACTION)}`, {
+              props,
+            });
+            navigate(`${t(SCREENS.ADD_TRANSACTION)}`);
+          }
+        }}>
+        <View className="flex flex-row justify-between items-center px-2 py-2">
+          {/* {item.category && (
+            <View className="flex flex-row items-center">
+              {React.createElement(LIST_CATEGORY[item.icon].icon, {
+                height: 30,
+                width: 30,
+                fill: `#${item?.idCategory?.fill}`,
+              })}
+              <View className="ml-3">
+                <Text
+                  style={{color: theme.textColor}}
+                  className="font-semibold">
+                  {item?.category?.name}
                 </Text>
-              )}
+                {isExpenses && (
+                  <Text className="text-gray-500">
+                    {formatNumberWithCommas(
+                      item?.money ? item?.money : item?.value,
+                    )}{' '}
+                    đ
+                  </Text>
+                )}
+              </View>
             </View>
-          </View>
-        ))}
-        {LIST_ITEM_EXPENSES.filter(itemExpenses => {
-          return itemExpenses.id === item.idCategory;
-        }).map((filteredItem, index) => (
-          <View key={index} className="flex flex-row items-center">
-            {React.createElement(filteredItem?.icon, {
+          )} */}
+          {/* {LIST_ITEM_REVENUE.filter(itemRevenue => {
+            return itemRevenue.id === item.idCategory;
+          }).map((filteredItem, index) => (
+            <View key={index} className="flex flex-row items-center">
+              {React.createElement(filteredItem?.icon, {
+                height: 30,
+                width: 30,
+                fill: 'blue',
+              })}
+              <View className="ml-3">
+                <Text
+                  style={{color: theme.textColor}}
+                  className="font-semibold">
+                  {filteredItem.title}
+                </Text>
+                {isExpenses && (
+                  <Text className="text-gray-500">
+                    {formatNumberWithCommas(item?.money)} đ
+                  </Text>
+                )}
+              </View>
+            </View>
+          ))} */}
+          <View className="flex flex-row items-center">
+            {React.createElement(icon, {
               height: 30,
               width: 30,
-              fill: 'blue',
+              fill:  `#${item?.idCategory?.fill}`,
             })}
             <View className="ml-3">
               <Text style={{color: theme.textColor}} className="font-semibold">
-                {filteredItem.title}
+                {item.idCategory.name}
               </Text>
               {isExpenses && (
                 <Text className="text-gray-500">
@@ -108,26 +116,26 @@ const CardTransaction = (props: Props) => {
               )}
             </View>
           </View>
-        ))}
-        {isExpenses && (
-          <Text className="font-semibold text-red-500">
-            {Math.floor(item.percent)}%
-          </Text>
-        )}
-        {(isTransactionRecent || isTransactionHistory) && (
-          <View className="flex flex-row justify-center item-center gap-x-2">
-            <Text
-              style={{color: theme.textColor}}
-              className="font-semibold text-[16px]">
-              {formatNumberWithCommas(item?.money ? item.money : item.value)}đ
+          {isExpenses && (
+            <Text className="font-semibold text-red-500">
+              {Math.floor(item.percent)}%
             </Text>
-            {isPercent && (
-              <Text className="text-[12px]">{item.percent.toFixed(1)}%</Text>
-            )}
-          </View>
-        )}
-      </View>
-    </TouchableOpacity>
+          )}
+          {(isTransactionRecent || isTransactionHistory) && (
+            <View className="flex flex-row justify-center item-center gap-x-2">
+              <Text
+                style={{color: theme.textColor}}
+                className="font-semibold text-[16px]">
+                {formatNumberWithCommas(item?.money ? item.money : item.value)}đ
+              </Text>
+              {isPercent && (
+                <Text className="text-[12px]">{item.percent.toFixed(1)}%</Text>
+              )}
+            </View>
+          )}
+        </View>
+      </TouchableOpacity>
+    )
   );
 };
 

@@ -3,6 +3,7 @@ import { STORAGE_KEY } from '@shared-constants';
 import React, {createContext, useContext, useEffect, useState} from 'react';
 import {User} from 'types/user.type';
 import { asyncStorageService } from 'utils/storage';
+import { Dispatch, SetStateAction } from 'react';
 
 export enum ColorThemes {
   base = 'base',
@@ -45,14 +46,21 @@ export const THEMES: {[key: string]: Theme} = {
 
 interface AppContextInterface {
   isAuthenticated: boolean;
-  setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsAuthenticated: Dispatch<SetStateAction<boolean>>;
   profile: any;
-  setProfile: React.Dispatch<React.SetStateAction<User | null>>;
-  setTheme: React.Dispatch<React.SetStateAction<any>>;
+  setProfile: Dispatch<SetStateAction<User | null>>;
+  setTheme: Dispatch<SetStateAction<any>>;
   theme: Theme;
+  category: {
+    expCategory: any[];
+    revCategory: any[];
+  };
+  setCategory: Dispatch<SetStateAction<{
+    expCategory: any[];
+    revCategory: any[];
+  }>>;
 }
 
-// Create your initial context
 const initialAppContext: AppContextInterface = {
   isAuthenticated: Boolean(null),
   setIsAuthenticated: () => null,
@@ -60,6 +68,11 @@ const initialAppContext: AppContextInterface = {
   setProfile: () => null,
   setTheme: () => null,
   theme: THEMES.base,
+  category: {
+    expCategory: [],
+    revCategory: []
+  },
+  setCategory: () => null, 
 };
 
 export const AppContext = createContext(initialAppContext);
@@ -70,6 +83,10 @@ export const AppProvider = ({children}: {children: React.ReactNode}) => {
   );
   const [profile, setProfile] = useState<User | null>(
     initialAppContext.profile,
+  );
+  
+  const [category, setCategory] = useState(
+    initialAppContext.category,
   );
   const [theme, setTheme] = useState(initialAppContext.theme);
 
@@ -101,6 +118,8 @@ export const AppProvider = ({children}: {children: React.ReactNode}) => {
         setIsAuthenticated,
         profile,
         setProfile,
+        category,
+        setCategory,
       }}>
       {children}
     </AppContext.Provider>

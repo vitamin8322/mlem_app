@@ -1,4 +1,5 @@
 import {getUserInfo} from '@services/apis/auth.api';
+import { allCategoryUser } from '@services/apis/category.api';
 import {
   percentTransaction,
   transactionExpMonth,
@@ -9,6 +10,8 @@ import {getAllWalletUser} from '@services/apis/wallet.api';
 import BarchartHome from '@shared-components/BarchartHome';
 import CardTransaction from '@shared-components/CardTransaction';
 import {
+  LIST_ITEM_EXPENSES_UPDATE,
+  LIST_ITEM_REVENUE_UPDATE,
   LIST_WALLET,
   REACT_QUERY_KEY,
   SCREENS,
@@ -26,7 +29,7 @@ import {navigate} from 'react-navigation-helpers';
 const HomeScreen = () => {
   const {t} = useTranslation('home');
   const {theme} = useTheme();
-  const {setIsAuthenticated, setProfile} = useContext(AppContext);
+  const {setIsAuthenticated, setProfile, setCategory} = useContext(AppContext);
 
   const [isEyeClose, setIsEyeClose] = useState(false);
   const [selectViewReport, setSelectViewReport] = useState(0);
@@ -42,6 +45,24 @@ const HomeScreen = () => {
       setIsAuthenticated(true);
     },
   });
+  
+  const {isLoading: isCategoryDataLoading, data: categoryData} = useQuery({
+    queryKey: [REACT_QUERY_KEY.ALL_CATEGORY],
+    queryFn: () => allCategoryUser(),
+    onSuccess(response) {
+      const expItems = response.data.data.filter(item => item.type === 'exp');
+      const revItems = response.data.data.filter(item => item.type === 'rev');
+      // setCategory({expCategory: [...LIST_ITEM_EXPENSES_UPDATE, ...expItems]})
+      
+      setCategory((prevCategory) => ({
+        ...prevCategory,
+        expCategory: [...LIST_ITEM_EXPENSES_UPDATE, ...expItems],
+        revCategory: [...LIST_ITEM_REVENUE_UPDATE, ...revItems]
+      }));
+    },
+  });
+
+  
 
   const {isLoading: isTransactionDataLoading, data: transactionData} = useQuery(
     {
@@ -49,7 +70,7 @@ const HomeScreen = () => {
       queryFn: () => transactionType(''),
     },
   );
-  console.log(transactionData);
+  // console.log(transactionData);
   
   const {isLoading: isWalletUserDataLoading, data: walletUserData} = useQuery({
     queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],

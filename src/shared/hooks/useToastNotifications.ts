@@ -25,7 +25,7 @@ const useToastNotifications = () => {
     toast.show(message, {
       type: type,
       placement: placement,
-      duration: 4000,
+      // duration: 4000,
       style:toastStyle,
       textStyle: {
         textAlign: "center",
