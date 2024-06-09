@@ -15,6 +15,8 @@
   "totalWeekMonth": "Tổng chi tiêu {{name}}",
   "lastMonth": "Tháng trước",
   "thisMonth": "Tháng này",
+  "lastWeek": "Tuần trước",
+  "thisWeek": "Tuần này",
   "topSpending": "Chi tiêu nhiều nhất",
   "recentTransaction": "Giao dịch gần đây",
   "expense": "Chi tiêu",

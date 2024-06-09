@@ -34,7 +34,7 @@ const AccountScreen = (props: Props) => {
                 if (item.navigate) {
                   navigate(item?.navigate);
                 }
-                if (item.id === '03') {
+                if (item.title === 'logout') {
                   
                   await asyncStorageService.removeValue('access_token')
                   await asyncStorageService.removeValue('profile')

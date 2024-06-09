@@ -6,6 +6,7 @@ import {
 import {
   LIST_CATEGORY,
   LIST_COLOR_CATEGORY,
+  LIST_ITEM_EXPENSES_UPDATE,
   REACT_QUERY_KEY,
 } from '@shared-constants';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
@@ -25,6 +26,7 @@ import useToastNotifications from 'shared/hooks/useToastNotifications';
 import LayoutBase from 'shared/layout';
 import {useToast} from 'react-native-toast-notifications';
 import {goBack} from 'react-navigation-helpers';
+import {asyncStorageService} from 'utils/storage';
 
 const CreateOrEditCategory = ({navigation, route}: any) => {
   const {params} = route;
@@ -34,6 +36,7 @@ const CreateOrEditCategory = ({navigation, route}: any) => {
   // console.log(params);
   const showToast = useToastNotifications();
 
+  // const [categoryLocal]
   const [formCategory, setFormCategory] = useState<{
     name: string;
     icon: string;
@@ -58,7 +61,7 @@ const CreateOrEditCategory = ({navigation, route}: any) => {
     mutationFn: deleteCategory,
   });
 
-  const handleFormCategory = () => {
+  const handleFormCategory = async () => {
     if (!params.edit) {
       // console.log(params.id);
       categoryMutation.mutate(formCategory, {
@@ -67,28 +70,77 @@ const CreateOrEditCategory = ({navigation, route}: any) => {
           queryClient.invalidateQueries({
             queryKey: [REACT_QUERY_KEY.ALL_CATEGORY],
           });
-        showToast('Create successfully', 'success', 'top');
-        goBack();
+          showToast('Create successfully', 'success', 'top');
+          goBack();
         },
       });
     } else {
-      editCategoryMutation.mutate(
-        {...formCategory, id: params.item._id},
-        {
-          onSuccess(response) {
-            console.log('edit', response.data.data);
-            queryClient.invalidateQueries({
-              queryKey: [REACT_QUERY_KEY.ALL_CATEGORY],
-            });
-            showToast('Edit successfully', 'success', 'top');
-            goBack();
+      const protectedExpIds = [
+        '6616005d96c029429bf6cf8e',
+        '661600b996c029429bf6cf9a',
+        '6616010d96c029429bf6cf9e',
+        '6616014096c029429bf6cfa0',
+        '6616014e96c029429bf6cfa2',
+        '6616015b96c029429bf6cfa4',
+        '6616016f96c029429bf6cfa6',
+        '6616017b96c029429bf6cfa8',
+        '66164711514ba9288c92c7c0',
+        '66164722514ba9288c92c7c2',
+        '66164731514ba9288c92c7c4',
+        '66164740514ba9288c92c7c6',
+      ];
+      const protectedRevIds = [
+        '66164711514ba9288c92c7c0',
+        '66164722514ba9288c92c7c2',
+        '66164731514ba9288c92c7c4',
+        '66164740514ba9288c92c7c6',
+      ];
+
+      if (protectedExpIds.includes(params.item._id)) {
+        const updatedData = LIST_ITEM_EXPENSES_UPDATE.map(item => {
+          if (item._id === params.item._id) {
+            return {...item, name: formCategory.name};
+          }
+          return item;
+        });
+        await asyncStorageService.setValue('exp_local', updatedData);
+        console.log('updatedData', updatedData);
+      } else if (protectedRevIds.includes(params.item._id)) {
+        const updatedData = LIST_ITEM_EXPENSES_UPDATE.map(item => {
+          if (item._id === params.item._id) {
+            return {...item, name: formCategory.name};
+          }
+          return item;
+        });
+        await asyncStorageService.setValue('rev_local', updatedData);
+        console.log('updatedData', updatedData);
+      } else {
+        editCategoryMutation.mutate(
+          {...formCategory, id: params.item._id},
+          {
+            onSuccess(response) {
+              console.log('edit', response.data.data);
+              queryClient.invalidateQueries({
+                queryKey: [REACT_QUERY_KEY.ALL_CATEGORY],
+              });
+              showToast('Edit successfully', 'success', 'top');
+              goBack();
+            },
           },
-        },
-      );
+        );
+      }
     }
   };
   const toast = useToast();
-
+  function updateNameById(id, newName) {
+    const updatedData = data.map(item => {
+      if (item._id === id) {
+        return {...item, name: newName}; // update name
+      }
+      return item;
+    });
+    return updatedData;
+  }
   const handleDeleteCategory = (id: string) => {
     deleteCategoryMutation.mutate(id, {
       onSuccess(response) {

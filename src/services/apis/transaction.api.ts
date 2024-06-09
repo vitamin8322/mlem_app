@@ -42,3 +42,6 @@ export const totalCategory = () =>
 
 export const reportYear = (year: number) =>
   http.get<any>(`/api/transaction/reportYear?year=${year}`);
+
+export const categoryMonth = (idCategory: string) =>
+  http.get<Transaction>(`/api/transaction/categoryMonth?idCategory=${idCategory}`);

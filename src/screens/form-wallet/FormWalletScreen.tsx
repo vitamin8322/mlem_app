@@ -6,10 +6,11 @@ import {Dinner} from 'assets';
 import classNames from 'classnames';
 import {useTheme} from 'contexts/app.context';
 import React, {useRef, useState} from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 import {Text, TextInput, TouchableOpacity, View} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import {Modalize} from 'react-native-modalize';
-import { navigate } from 'react-navigation-helpers';
+import {navigate} from 'react-navigation-helpers';
 import LayoutBase from 'shared/layout';
 
 type Props = {};
@@ -47,9 +48,9 @@ const FormWalletScreen = ({navigation, route}: any) => {
       money: Number(valueMoney),
       name: nameWallet,
       idWallet: idWallet,
-      ...(params && { id: params.id })
+      ...(params && {id: params.id}),
     };
-    
+
     if (params) {
       console.log(params.id);
       editWalletMutation.mutate(body, {
@@ -58,33 +59,37 @@ const FormWalletScreen = ({navigation, route}: any) => {
           queryClient.invalidateQueries({
             queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
           });
-          navigate(SCREENS.MY_WALLET_SCREEN)
+          navigate(SCREENS.MY_WALLET_SCREEN);
         },
       });
     } else {
-    console.log(body);
-    walletMutation.mutate(body, {
+      console.log(body);
+      walletMutation.mutate(body, {
         onSuccess(response) {
           console.log('add');
           queryClient.invalidateQueries({
             queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
           });
-          navigate(SCREENS.MY_WALLET_SCREEN)
+          navigate(SCREENS.MY_WALLET_SCREEN);
         },
       });
     }
   };
+  const handlePress = (id: string) => {
+    setIdWallet(id);
+  };
 
   return (
     <LayoutBase
-      name={`${!params ? t("addWallet") : t("editWallet")}`}
+      name={`${!params ? t('addWallet') : t('editWallet')}`}
       isBack
       setCheckIsBack={setCheckIsBack}
       checkIsBack={checkIsBack}>
+      <Spinner visible={walletMutation.isLoading  || editWalletMutation.isLoading} textContent={''} />
       <View className="flex justify-center items-center gap-y-2 px-3 mt-2">
         <View className="flex flex-row justify-center items-center ">
           <View className="w-3/12">
-            <Text style={{color: theme.textColor}}>{t("name")}</Text>
+            <Text style={{color: theme.textColor}}>{t('name')}</Text>
           </View>
           <View className="w-9/12">
             <TextInput
@@ -99,7 +104,7 @@ const FormWalletScreen = ({navigation, route}: any) => {
         </View>
         <View className="flex flex-row justify-center items-center">
           <View className="w-3/12">
-            <Text style={{color: theme.textColor}}>{t("money")}</Text>
+            <Text style={{color: theme.textColor}}>{t('money')}</Text>
           </View>
           <View className="w-9/12">
             <TextInput
@@ -123,18 +128,36 @@ const FormWalletScreen = ({navigation, route}: any) => {
         </View>
         <View className="flex justify-start items-start w-full">
           <View>
-            <Text style={{color: theme.textColor}}>{t("category")}</Text>
+            <Text style={{color: theme.textColor}}>{t('category')}</Text>
           </View>
           <View className="flex flex-row items-center gap-2 flex-wrap px-2 mt-1">
             {LIST_WALLET.map((item, index) => {
               return (
-                <CardCategory
-                  key={index}
-                  idCategory={idWallet}
-                  setIdCategory={setIdWallet}
-                  index={index}
-                  item={item}
-                />
+                // <CardCategory
+                //   key={index}
+                //   idCategory={idWallet}
+                //   setIdCategory={setIdWallet}
+                //   index={index}
+                //   item={item}
+                // />
+                <TouchableOpacity
+                  onPress={() => handlePress(item.id)}
+                  style={{borderColor: theme.textColor}}
+                  className={classNames(
+                    'flex justify-center items-center h-16 w-[22%] border border-gray-500 rounded-md m-1',
+                    {'border-2': item.id === idWallet},
+                  )}>
+                  {item?.icon && (
+                    <View className="w-8 h-8">
+                      {React.createElement(item?.icon, {
+                        height: 30,
+                        width: 30,
+                        // fill: item?.fill ? `#${item?.fill}` : '#000000',
+                        // fill:  '#1fc72b' ,
+                      })}
+                    </View>
+                  )}
+                </TouchableOpacity>
               );
             })}
           </View>
@@ -153,7 +176,7 @@ const FormWalletScreen = ({navigation, route}: any) => {
               'text-white': valueMoney !== '0',
             },
           )}>
-          {t("save")}
+          {t('save')}
         </Text>
       </TouchableOpacity>
     </LayoutBase>

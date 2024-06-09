@@ -33,6 +33,7 @@ import Check from './images/category/Check.svg'
 import Card1 from './images/category/Card1.svg'
 import Card2 from './images/category/Card2.svg'
 import Card3 from './images/category/Card3.svg'
+import Car2 from './images/category/Car2.svg'
 import Delete from './images/category/Delete.svg'
 import Test from './images/test.png'
 import Language from './images/account/Language.svg'
@@ -43,6 +44,7 @@ import BarChart from './images/account/BarChart.svg'
 import CircleChart from './images/account/CircleChart.svg'
 import English from './images/language/English.svg'
 import Vietnam from './images/language/Vietnam.svg'
+import Shopping from './images/category/Shopping.svg'
 
 export {
     Icon, StartApp, Background,Test,
@@ -55,5 +57,6 @@ export {
     ArrowLeft, WouldInternet, Option, Language,
     Color,
     English, Vietnam, Logout, AccountSetting, BarChart, CircleChart,
-    Card1, Card2, Card3
+    Card1, Card2, Card3,
+    Car2, Shopping
 }

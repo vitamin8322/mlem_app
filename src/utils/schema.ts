@@ -16,7 +16,7 @@ export const changePassword = yup.object({
   new_password: yup.string().required('New Password is required').min(8, "Your password needs to be at least 8 characters. Include multiple words and phrases to make it more secure.").notOneOf([yup.ref('password')], 'New password must be different from current password'),
   new_confirm_password: yup.string().required('Confirm Password is required').oneOf([yup.ref('new_password')], 'Confirm password does not match with a password.'),
 })
-export const editProfileSchema = authSchema.pick(['fname', 'lname', 'phone_number', 'email'])
+export const editProfileSchema = authSchema.pick(['name', 'email'])
 export const changePasswordSchema = changePassword
 
 export const loginSchema = authSchema.pick(['email', 'password'])

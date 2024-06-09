@@ -5,6 +5,7 @@ import HomeScreen from '@screens/home/HomeScreen';
 import MyWalletScreen from '@screens/my-wallet';
 import TransactionHistoryScreen from '@screens/transaction-history';
 import FormWalletScreen from '@screens/form-wallet';
+import ForgotPasswordScreen from '@screens/forgot-password/ForgotPasswordScreen';
 const Stack = createStackNavigator();
 
 const HomeNavigation = () => {

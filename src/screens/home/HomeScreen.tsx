@@ -25,12 +25,13 @@ import React, {useContext, useState} from 'react';
 import {useTranslation} from 'react-i18next';
 import {FlatList, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import {navigate} from 'react-navigation-helpers';
+import { asyncStorageService } from 'utils/storage';
 
 const HomeScreen = () => {
   const {t} = useTranslation('home');
   const {theme} = useTheme();
-  const {setIsAuthenticated, setProfile, setCategory} = useContext(AppContext);
-
+  const {setIsAuthenticated, setProfile, setCategory, profile} = useContext(AppContext);
+  
   const [isEyeClose, setIsEyeClose] = useState(false);
   const [selectViewReport, setSelectViewReport] = useState(0);
   const [dataMostExp, setDataMostExp] = useState();
@@ -49,18 +50,21 @@ const HomeScreen = () => {
   const {isLoading: isCategoryDataLoading, data: categoryData} = useQuery({
     queryKey: [REACT_QUERY_KEY.ALL_CATEGORY],
     queryFn: () => allCategoryUser(),
-    onSuccess(response) {
+    onSuccess: async (response) => {
       const expItems = response.data.data.filter(item => item.type === 'exp');
       const revItems = response.data.data.filter(item => item.type === 'rev');
       // setCategory({expCategory: [...LIST_ITEM_EXPENSES_UPDATE, ...expItems]})
+      const dataExpLocal = await asyncStorageService.getValue('exp_local');
+      const dataRevLocal = await asyncStorageService.getValue('rev_local');
       
       setCategory((prevCategory) => ({
         ...prevCategory,
-        expCategory: [...LIST_ITEM_EXPENSES_UPDATE, ...expItems],
-        revCategory: [...LIST_ITEM_REVENUE_UPDATE, ...revItems]
+        expCategory: [...(dataExpLocal || LIST_ITEM_EXPENSES_UPDATE), ...expItems],
+        revCategory: [...(dataRevLocal || LIST_ITEM_REVENUE_UPDATE), ...revItems]
       }));
     },
   });
+  
 
   
 
@@ -70,7 +74,6 @@ const HomeScreen = () => {
       queryFn: () => transactionType(''),
     },
   );
-  // console.log(transactionData);
   
   const {isLoading: isWalletUserDataLoading, data: walletUserData} = useQuery({
     queryKey: [REACT_QUERY_KEY.ALL_WALLET_USER],
@@ -205,12 +208,12 @@ const HomeScreen = () => {
             <Text style={{color: theme.textColor}} className="font-semibold ">
                 {t("viewReport")}
             </Text>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => {
-                navigate(SCREENS.LOGIN_SCREEN);
+                navigate(SCREENS.ADD_TRANSACTION);
               }}>
               <Text className="font-semibold text-green-500">{t("viewAll")}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
           <View
             style={{backgroundColor: theme.backgroundColor}}
@@ -286,7 +289,7 @@ const HomeScreen = () => {
 
             <View className="ml-3 my-2">
               {
-                dataBarChart && <BarchartHome data={dataBarChart} />
+                dataBarChart && <BarchartHome data={dataBarChart} selectViewReport={selectViewReport} />
                 // <CxPieChart />
               }
             </View>
@@ -326,7 +329,7 @@ const HomeScreen = () => {
               showsHorizontalScrollIndicator={false}
               data={transactionData?.data?.transactions.slice(0, 4)}
               renderItem={({item}) => (
-                <CardTransaction isTransactionRecent item={item} isNavigate />
+                <CardTransaction isTransactionRecent item={item} isNavigate={SCREENS.ADD_TRANSACTION} />
               )}
               keyExtractor={item => item.id}
             />

@@ -54,8 +54,10 @@ export const SCREENS = {
   CHANGE_COLOR_SCREEN: 'CHANGE_COLOR_SCREEN',
   ACCOUNT_SETTING_SCREEN: 'ACCOUNT_SETTING_SCREEN',
   TOTAL_REPORT_SCREEN: 'TOTAL_REPORT_SCREEN',
-  TOTAL_CATEGORY_SCREEN: 'TOTAL_CATEGORY_SCREEN',
+  TOTAL_CATEGORY_SCREEN: 'TOTAL_CATEGORY_SCREEN ',
   ANNUAL_REPORT_SCREEN: 'ANNUAL_REPORT_SCREEN',
+  REPORT_CATEGORY_SCREEN: 'REPORT_CATEGORY_SCREEN',
+  FORGOT_PASSWORD_SCREEN: 'FORGOT_PASSWORD_SCREEN',
 
   test: 'home',
 };
@@ -269,6 +271,18 @@ export const LIST_CATEGORY = {
   Smartphone: {
     icon: Smartphone,
     name: 'Smartphone'
+  },
+  Card1: {
+    icon: Card1,
+    name: 'Card1'
+  },
+  Card2: {
+    icon: Card2,
+    name: 'Card2'
+  },
+  Card3: {
+    icon: Card3,
+    name: 'Card3'
   },
 }
 

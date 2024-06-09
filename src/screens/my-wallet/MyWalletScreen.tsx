@@ -30,7 +30,8 @@ const MyWalletScreen = ({ navigation, route }: any) => {
     queryFn: () => getAllWalletUser(),
     onSuccess(response) {
       const totalMoney = response.data.data.reduce((accumulator: any, currentValue: any) => accumulator + currentValue.money, 0);
-      setTotalWallet(totalMoney)
+      
+      setTotalWallet(totalMoney || 0)
     },
   });
 

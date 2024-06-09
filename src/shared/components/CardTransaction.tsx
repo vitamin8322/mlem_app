@@ -18,7 +18,7 @@ type Props = {
   isTransactionHistory?: boolean;
   item: any;
   isPercent?: boolean;
-  isNavigate?: boolean;
+  isNavigate?: any;
 };
 
 const CardTransaction = (props: Props) => {
@@ -36,19 +36,22 @@ const CardTransaction = (props: Props) => {
     LIST_CATEGORY[item?.icon]?.icon ||
     LIST_CATEGORY[item?.idCategory?.icon]?.icon;
 
+    console.log('item', item);
     
   return (
     item && (
       <TouchableOpacity
         onPress={() => {
-          if (isNavigate) {
-            push(`${t(SCREENS.ADD_TRANSACTION)}`, {
+          if (isNavigate && isTransactionRecent) {
+            push(`${t(isNavigate)}`, {
               props,
             });
-            navigate(`${t(SCREENS.ADD_TRANSACTION)}`);
+            navigate(`${t(isNavigate)}`, {
+              idCategory: item.idCategory._id
+            });
           }
         }}>
-        <View className="flex flex-row justify-between items-center px-2 py-2">
+        <View className="flex flex-row justify-between items-center px-5 py-2">
           {/* {item.category && (
             <View className="flex flex-row items-center">
               {React.createElement(LIST_CATEGORY[item.icon].icon, {

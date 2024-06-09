@@ -10,8 +10,9 @@ class Http {
   private accessToken: string | null | undefined
   constructor() {
     this.instance = axios.create({
-      // baseURL: 'http://10.40.11.44:8888',
-      baseURL: 'http://192.168.1.9:8888',
+      // baseURL: 'http://10.40.10.77:8888',
+      baseURL: 'http://192.168.1.8:8888',
+      // baseURL: 'http://127.0.0.1:8888',
       // baseURL: 'https://backend-wonwon.onrender.com',
       timeout: 30000,
       headers: {

@@ -32,7 +32,8 @@ const CardCategory = (props: Props) => {
       setIcon(item?.icon);
     }
   };
-
+  // console.log(item);
+  
   return (
     <TouchableOpacity
       onPress={handlePress}

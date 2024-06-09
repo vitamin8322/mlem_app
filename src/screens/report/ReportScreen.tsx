@@ -1,7 +1,7 @@
 import {monthTransaction} from '@services/apis/transaction.api';
 import CardTransaction from '@shared-components/CardTransaction';
 import CxPieChart from '@shared-components/CxPieChart';
-import {REACT_QUERY_KEY, formatNumberWithCommas} from '@shared-constants';
+import {REACT_QUERY_KEY, SCREENS, formatNumberWithCommas} from '@shared-constants';
 import {useQuery} from '@tanstack/react-query';
 import {Dinner, StartApp, Test} from 'assets';
 import classNames from 'classnames';
@@ -132,13 +132,11 @@ const ReportScreen = () => {
                 return a.value - b.value;
               })}
               renderItem={({item}) => (
-                <CardTransaction isTransactionRecent isPercent item={item} />
+                <CardTransaction isTransactionRecent isPercent item={item} isNavigate={SCREENS.REPORT_CATEGORY_SCREEN} />
               )}
               keyExtractor={item => item.id}
             />
           ) : (
-            // <Text className="text-center">Không có 11dữ liêu</Text>
-
             <Text className="text-center">Không có dữ liệu</Text>
           )}
         </>

@@ -77,7 +77,7 @@ const TransactionScreen = ({navigation, route}: any) => {
   );
   const [idCategory, setIdCategory] = useState(
     String(params?.props.item.idCategory) !== 'undefined'
-      ? String(params?.props.item.idCategory)
+      ? String(params?.props.item.idCategory._id)
       : 'exp01',
   );
 
@@ -113,17 +113,16 @@ const TransactionScreen = ({navigation, route}: any) => {
     queryKey: [REACT_QUERY_KEY.ALL_CATEGORY],
     queryFn: () => allCategoryUser(),
     onSuccess(response) {
-      setDataExp([])
-      setDataRev([])
+      setDataExp([]);
+      setDataRev([]);
       const expItems = response.data.data.filter(item => item.type === 'exp');
       const revItems = response.data.data.filter(item => item.type === 'rev');
-      
+
       setDataExp([...LIST_ITEM_EXPENSES_UPDATE, ...expItems, ...edit]);
       setDataRev([...LIST_ITEM_REVENUE_UPDATE, ...revItems, ...edit]);
-
     },
   });
-  
+
   const [idWallet, setIdWallet] = useState<Wallet>(() => {
     return walletUserData?.data.data.find((wallet: Wallet) => {
       if (params) {
@@ -180,7 +179,7 @@ const TransactionScreen = ({navigation, route}: any) => {
     }
 
     const body = {
-      money: Number(valueMoney),
+      money:  Number(valueMoney.replace(/,/g, '')),
       note: note,
       type: selectTransaction === 0 ? 'exp' : 'rev',
       date: selectedDate,
@@ -190,7 +189,7 @@ const TransactionScreen = ({navigation, route}: any) => {
       ...(params && {id: params.props.item._id}),
     };
     console.log('body', body);
-    
+
     const invalidateQueries = () => {
       [
         REACT_QUERY_KEY.TRANSACTION,
@@ -223,7 +222,7 @@ const TransactionScreen = ({navigation, route}: any) => {
       unknown
     > = {
       onSuccess: (response: any) => {
-        console.log(params ? 'edit' : 'add');
+        // console.log(params ? 'edit' : 'add');
         setValueMoney('0');
         setNote('');
         invalidateQueries();
@@ -243,7 +242,13 @@ const TransactionScreen = ({navigation, route}: any) => {
   const onOpenModalize = () => {
     modalizeRef.current?.open();
   };
-  
+
+  const formatMoney = (text: string) => {
+    if (text.length === 0) return '0';
+    const num = parseFloat(text.replace(/,/g, ''));
+    return num.toLocaleString('en-US');
+  };
+
   const handleSelectExp = () => {
     setIdCategory('6616005d96c029429bf6cf8e');
   };
@@ -298,7 +303,7 @@ const TransactionScreen = ({navigation, route}: any) => {
             </View>
             <View className="w-9/12">
               <TextInput
-                ref={inputRef}
+                // ref={inputRef}
                 style={{color: theme.textColor, borderColor: theme.textColor}}
                 className="w-full border border-slate-200 rounded-md h-12 px-2 text-[18px] font-semibold"
                 keyboardType="numeric"
@@ -307,12 +312,10 @@ const TransactionScreen = ({navigation, route}: any) => {
                   if (text.length === 0) {
                     setValueMoney('0');
                     return;
-                  } else if (valueMoney === '0' && text === '00') {
-                    setValueMoney('0');
-                    return;
                   }
                   const newValue = text.replace(/^0+(?=\d)/, '');
-                  setValueMoney(newValue);
+                  const formattedValue = formatMoney(newValue);
+                  setValueMoney(formattedValue);
                 }}
               />
             </View>
@@ -353,7 +356,8 @@ const TransactionScreen = ({navigation, route}: any) => {
                     data={[...category.expCategory, ...edit]}
                     numColumns={4}
                     keyExtractor={item => {
-                      return item.id}}
+                      return item.id;
+                    }}
                     renderItem={({item, index}) => (
                       <CardCategory
                         key={item._id}
@@ -368,7 +372,7 @@ const TransactionScreen = ({navigation, route}: any) => {
                   />
                 ) : (
                   <FlatList
-                  data={[...category.revCategory, ...edit]}
+                    data={[...category.revCategory, ...edit]}
                     numColumns={4}
                     keyExtractor={item => item.id}
                     renderItem={({item, index}) => (

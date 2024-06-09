@@ -13,3 +13,11 @@ export const editWallet = (data: { money: number, name: string, idWallet: string
 export const getAllWalletUser = () => {
   return http.get<WalletApiSuccess>('/api/wallet/getAllWalletUser');
 };
+
+export const deleteWallet = (id?: string) => {
+  return http.post<WalletApiSuccess>(`/api/wallet/delete?id=${id}`);
+};
+
+export const defaultWallet = (id?: string) => {
+  return http.post<WalletApiSuccess>(`/api/wallet/defaultWallet?id=${id}`);
+};

@@ -19,6 +19,9 @@ import {login} from '@services/apis/auth.api';
 import {useMutation} from '@tanstack/react-query';
 import {AppContext} from 'contexts/app.context';
 import Spinner from 'react-native-loading-spinner-overlay';
+import useToastNotifications from 'shared/hooks/useToastNotifications'
+import navigation from 'navigation';
+import { useTranslation } from 'react-i18next';
 
 const LoginScreen = () => {
   const {setIsAuthenticated, setProfile} = useContext(AppContext);
@@ -30,6 +33,9 @@ const LoginScreen = () => {
   } = useForm<LoginSchema>({
     resolver: yupResolver(loginSchema),
   });
+  const { t, i18n } = useTranslation("home");
+
+  const showToast = useToastNotifications();
 
   const loginMutation = useMutation({
     mutationFn: login,
@@ -45,13 +51,10 @@ const LoginScreen = () => {
     loginMutation.mutate(body, {
       onSuccess(response) {
         setProfile(response.data.data);
-
-        // queryClient.invalidateQueries({
-        //   queryKey: [REACT_QUERY_KEY.WITHDRAW_MONEY],
-        // });
         setIsAuthenticated(true);
       },
       onError(error) {
+        showToast("Email hoặc mật khẩu không đúng", "err", "top");
         // console.log(error);
       },
     });
@@ -100,7 +103,9 @@ const LoginScreen = () => {
         />
         <View className="flex flex-row justify-between items-center">
           <Text></Text>
-          <Text className="text-orange">Quên mật khẩu?</Text>
+          <TouchableOpacity onPress={() => navigate(t(SCREENS.FORGOT_PASSWORD_SCREEN))}>
+            <Text className="text-orange">Quên mật khẩu?</Text>
+          </TouchableOpacity>
         </View>
         <View className="bg-orange h-12 rounded-2xl mt-[90%]">
           <TouchableOpacity onPress={submitLogin}>

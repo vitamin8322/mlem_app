@@ -22,7 +22,6 @@ const AccountSettingScreen = (props: Props) => {
   const {theme} = useTheme();
   const {t, i18n} = useTranslation('home');
   const { profile, setProfile } = useContext(AppContext);
-  // const showToast = useToastNotifications();
   const showToast = useToastNotifications();
   const queryClient = useQueryClient();
 
@@ -36,10 +35,8 @@ const AccountSettingScreen = (props: Props) => {
   });
 
   useEffect(() => {
-    editProfileSetValue("email", profile.email);
-    editProfileSetValue("fname", profile.fname);
-    editProfileSetValue("lname", profile.lname);
-    editProfileSetValue("phone_number", profile.phone_number);
+    editProfileSetValue("email", profile?.email);
+    editProfileSetValue("name", profile?.name);
     return () => {};
   }, [profile]);
 
@@ -57,6 +54,8 @@ const AccountSettingScreen = (props: Props) => {
   });
 
   const handleSubmitUpdateProfile = editProfileHandleSubmit((data) => {
+    console.log('data', data);
+    
     updateProfileMutation.mutate(data, {
       onSuccess(response) {
         showToast("Profile updated successfully", "success", "top");
@@ -140,12 +139,12 @@ const AccountSettingScreen = (props: Props) => {
 
             <Controller
               control={editProfileControl}
-              name="fname"
+              name="name"
               render={({ field }) => (
                 <Input
                   style={{color: theme.textColor, borderColor: theme.textColor}}
                   classNameInput="w-full border justify-start rounded-md px-3 h-12"
-                  errorMessage={editProfileErrors.fname?.message}
+                  errorMessage={editProfileErrors.name?.message}
                   classNameError="text-red-500"
                   placeholderColor="#ACA3A3"
                   placeholder="First Name"
@@ -155,43 +154,9 @@ const AccountSettingScreen = (props: Props) => {
               )}
             />
 
-            <Controller
-              control={editProfileControl}
-              name="lname"
-              render={({ field }) => (
-                <Input
-                  style={{color: theme.textColor, borderColor: theme.textColor}}
-                  classNameInput="w-full border justify-start rounded-md px-3 h-12"
-                  errorMessage={editProfileErrors.lname?.message}
-                  classNameError="text-red-500"
-                  placeholderColor="#ACA3A3"
-                  placeholder="Last Name"
-                  value={field.value}
-                  onChangeText={field.onChange}
-                />
-              )}
-            />
-
-            <Controller
-              control={editProfileControl}
-              name="phone_number"
-              render={({ field }) => (
-                <Input
-                  style={{color: theme.textColor, borderColor: theme.textColor}}
-                  classNameInput="w-full border justify-start rounded-md px-3 h-12"
-                  errorMessage={editProfileErrors.phone_number?.message}
-                  classNameError="text-red-500"
-                  placeholderColor="#ACA3A3"
-                  placeholder="Phone Number"
-                  value={field.value}
-                  onChangeText={field.onChange}
-                />
-              )}
-            />
-
             <View className="flex flex-row justify-center items-center mt-1 mb-5">
               <View className="flex items-center justify-center h-10 w-40 bg-purple">
-                <TouchableOpacity onPress={handleSubmitUpdateProfile}>
+                <TouchableOpacity onPress={handleSubmitUpdateProfile} >
                   <Text className="text-white text-[16px] font-semibold">
                     Update
                   </Text>
@@ -248,9 +213,9 @@ const AccountSettingScreen = (props: Props) => {
                 <Input
                   style={{color: theme.textColor, borderColor: theme.textColor}}
                   classNameInput="w-full border justify-start rounded-md px-3 h-12"
-                  errorMessage={
-                    changePasswordErrors.new_confirm_password?.message
-                  }
+                  // errorMessage={
+                  //   changePasswordErrors.new_confirm_password?.message
+                  // }
                   classNameError="text-red-500"
                   placeholderColor="#ACA3A3"
                   placeholder="Confirm Password"
@@ -263,7 +228,9 @@ const AccountSettingScreen = (props: Props) => {
 
             <View className="flex flex-row justify-center items-center mt-1 mb-5">
               <View className="flex items-center justify-center h-10 w-40 bg-purple">
-                <TouchableOpacity onPress={handleSubmitChangePassword}>
+                <TouchableOpacity 
+                onPress={handleSubmitChangePassword}
+                >
                   <Text className="text-white text-[16px] font-semibold">
                     Change Password
                   </Text>
