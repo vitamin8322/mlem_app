@@ -206,6 +206,7 @@ const TransactionScreen = ({navigation, route}: any) => {
         queryClient.invalidateQueries({queryKey});
       });
     };
+    setNote('');
 
     const mutationOptions: MutateOptions<
       TransactionResponseApiSuccess,
@@ -222,7 +223,7 @@ const TransactionScreen = ({navigation, route}: any) => {
       unknown
     > = {
       onSuccess: (response: any) => {
-        // console.log(params ? 'edit' : 'add');
+        console.log(params ? 'edit' : 'add');
         setValueMoney('0');
         setNote('');
         invalidateQueries();
@@ -287,9 +288,10 @@ const TransactionScreen = ({navigation, route}: any) => {
               <Text style={{color: theme.textColor}}>Ghi chú</Text>
             </View>
             <View className="w-9/12">
-              <Input
+              <TextInput
                 style={{color: theme.textColor, borderColor: theme.textColor}}
-                classNameInput="w-full border border-slate-200 rounded-md h-20 px-2 "
+                className="w-full border border-slate-200 rounded-md h-20 px-2 "
+                value={note}
                 multiline
                 onChangeText={text => {
                   setNote(text);

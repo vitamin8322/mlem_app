@@ -206,7 +206,7 @@ const CreateOrEditCategory = ({navigation, route}: any) => {
                         {React.createElement(item.icon, {
                           height: 40,
                           width: 40,
-                          fill: 'blue',
+                          fill: '#000000',
                         })}
                       </View>
                     </TouchableOpacity>

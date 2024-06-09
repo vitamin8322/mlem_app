@@ -92,7 +92,7 @@ const ListCategory = ({navigation, route}: any) => {
                   {React.createElement(LIST_CATEGORY[item?.icon].icon, {
                     height: 40,
                     width: 40,
-                    fill: `#${item.fill}`,
+                    fill: item?.fill ? `#${item?.fill}` : '#000000' ,
                   })}
                   <Text className={'font-semibold text-[16px]'}>
                     {item.name}
